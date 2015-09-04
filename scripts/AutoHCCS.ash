@@ -20,8 +20,7 @@ int [string] statemap;
 
 boolean actuallyrun = false;
 
-//////fix combat handling, shit don't work at all :/
-////switch chateau to moxie for a rest or two if need to get to 35 for hot equip....or powerlevel before hot test?
+////fix comabt handling if it still doesn't work, probably does now
 ////add puck-man logic maybe (unlocking the woods and stuff)
 ////allow running before ascending to check prereqs then
 
@@ -114,6 +113,58 @@ void checkPrereq() {
 		abort("You're supposed to be a sauceror.");
 	} else if (!knoll_available()) {
 		abort("You're supposed to have access to the (friendly) Degrassi Knoll. You know, muscle sign.");
+	}
+}
+
+void chateaumantegna_buyStuff(item toBuy) //thanks Cheesecookie
+{
+	if(!get_property_boolean("chateauAvailable"))
+	{
+		return;
+	}
+
+	if((toBuy == $item[Electric Muscle Stimulator]) && (my_meat() >= 500))
+	{
+		visit_url("shop.php?pwd=&whichshop=chateau&action=buyitem&whichrow=411&quantity=1", true);
+	}
+	if((toBuy == $item[Foreign Language Tapes]) && (my_meat() >= 500))
+	{
+		visit_url("shop.php?pwd=&whichshop=chateau&action=buyitem&whichrow=412&quantity=1", true);
+	}
+	if((toBuy == $item[Bowl of Potpourri]) && (my_meat() >= 500))
+	{
+		visit_url("shop.php?pwd=&whichshop=chateau&action=buyitem&whichrow=413&quantity=1", true);
+	}
+
+	if((toBuy == $item[Antler Chandelier]) && (my_meat() >= 1500))
+	{
+		visit_url("shop.php?pwd=&whichshop=chateau&action=buyitem&whichrow=415&quantity=1", true);
+	}
+	if((toBuy == $item[Artificial Skylight]) && (my_meat() >= 1500))
+	{
+		visit_url("shop.php?pwd=&whichshop=chateau&action=buyitem&whichrow=416&quantity=1", true);
+	}
+	if((toBuy == $item[Ceiling Fan]) && (my_meat() >= 1500))
+	{
+		visit_url("shop.php?pwd=&whichshop=chateau&action=buyitem&whichrow=414&quantity=1", true);
+	}
+
+	if((toBuy == $item[Continental Juice Bar]) && (my_meat() >= 2500))
+	{
+		visit_url("shop.php?pwd=&whichshop=chateau&action=buyitem&whichrow=418&quantity=1", true);
+	}
+	if((toBuy == $item[Fancy Calligraphy Pen]) && (my_meat() >= 2500))
+	{
+		visit_url("shop.php?pwd=&whichshop=chateau&action=buyitem&whichrow=419&quantity=1", true);
+	}
+	if((toBuy == $item[Swiss Piggy Bank]) && (my_meat() >= 2500))
+	{
+		visit_url("shop.php?pwd=&whichshop=chateau&action=buyitem&whichrow=417&quantity=1", true);
+	}
+
+	if((toBuy == $item[Alpine Watercolor Set]) && (my_meat() >= 5000))
+	{
+		visit_url("shop.php?pwd=&whichshop=chateau&action=buyitem&whichrow=420&quantity=1", true);
 	}
 }
 
@@ -242,7 +293,7 @@ string combatYR() {
 	if (have_skill($skill[Open a Big Yellow Present])) {
 		return "skill Open a Big Yellow Present";
 	} else if ($item[Golden Light].available_amount() > 0) {
-		return "use Golden Light";
+		return "item Golden Light";
 	} else {
 		abort("No yellow ray available when trying to use one");
 		return "I really shouldn't have to specify a return value after an abort";
@@ -253,7 +304,7 @@ string combat(int round, string opp, string text) { //always uses your own custo
 	if ((opp == $monster[lavatory].to_string() || opp == $monster[garbage tourist].to_string() || opp == $monster[lava lamprey].to_string() || opp.contains_text("pirate")) && $item[DNA extraction syringe].available_amount() > 0) { //DNA
 		if ($item[Gene Tonic: Elemental].available_amount() == 0) {
 			if(round == 0) {
-				return "use DNA extraction syringe";
+				return "item DNA extraction syringe";
 			} else {
 				return customCombat(round - 1);
 			}
@@ -262,7 +313,7 @@ string combat(int round, string opp, string text) { //always uses your own custo
 		}
 	} else if (opp == $monster[dairy goat].to_string()) { //beast DNA and milk of magnesium
 		if(round == 0 && $item[DNA extraction syringe].available_amount() > 0 && $item[Gene Tonic: Beast].available_amount() == 0) {
-			return "use DNA extraction syringe";
+			return "item DNA extraction syringe";
 		} else if (YRsourceAvailable()) {
 			return combatYR();
 		} else {
@@ -284,7 +335,7 @@ string combat(int round, string opp, string text) { //always uses your own custo
 		if (round == 1) {
 			return "skill Giant Growth";
 		} else {
-			return "use Louder Than Bomb";
+			return "item Louder Than Bomb";
 		}
 	} else { //no special case, just use your CCS
 		return customCombat(round);
@@ -536,7 +587,11 @@ void hotTest() {
 		pulverize($item[dirty rigging rope]);
 		pulverize($item[sewage-clogged pistol]);
 		pulverize($item[dirty hobo gloves]);
-		////chateau rest to 35 moxie
+		if (my_basestat($stat[moxie]) < 35 && ($item[lava-proof pants].available_amount() > 0 || $item[heat-resistant necktie].available_amount() > 0 || $item[heat-resistant gloves].available_amount() > 0)) {
+			chateaumantegna_buyStuff($item[bowl of potpourri]);
+			while(my_basestat($stat[moxie]) < 35 && free_rest()){}
+			chateaumantegna_buyStuff($item[foreign language tapes]);
+		}
 		if ($item[lava-proof pants].available_amount() > 0) {
 			equip($item[lava-proof pants]);
 		}
@@ -686,9 +741,6 @@ void allStatBuffs() {
 	if (have_effect($effect[Stevedave's Shanty of Superiority]) == 0) {
 		chateauCast($skill[Stevedave's Shanty of Superiority]);
 	} 
-	if (have_effect($effect[Expert Oiliness]) == 0) {
-		useIfHave(1, $item[oil of expertise]);
-	}
 	if (have_effect($effect[Smithsness Presence]) == 0) {
 		useIfHave(1, $item[handful of Smithereens]);
 	}
@@ -776,6 +828,9 @@ void muscleTest() {
 		if (have_effect($effect[Phorcefullness]) == 0) {
 			useIfHave(1, $item[philter of phorce]);
 		}
+		if (have_effect($effect[Expert Oiliness]) == 0) {
+			useIfHave(1, $item[oil of expertise]);
+		}
 		allStatBuffs();
 		giantGrowth();
 		saveProgress(29);
@@ -800,7 +855,7 @@ void mystTest() {
 	}
 	if(statemap["questStage"] == 31) {
 		maximize("myst", false);
-		doTest(MOXTEST);
+		doTest(MYSTTEST);
 		saveProgress(32);
 	}
 }
@@ -814,6 +869,9 @@ void moxieTest() {
 		useIfHave(1, $item[dollop of barbecue sauce]);
 		useIfHave(1, $item[pressurized potion of pulchritude]);
 		useIfHave(1, $item[serum of sarcasm]);
+		if (have_effect($effect[Expert Oiliness]) == 0) {
+			useIfHave(1, $item[oil of expertise]);
+		}
 		allStatBuffs();
 		giantGrowth();
 		useIfHave(1, $item[pocket maze]);
@@ -1157,6 +1215,10 @@ void endDay1() { //final actions of day 1; spell test buffing goes here
 	chateauCast($skill[The Ode to Booze]);
 	chateauCast($skill[Jackasses' Symphony of Destruction]);
 	chateauCast($skill[Song of Sauce]);
+	if(get_property_boolean("barrelShrineUnlocked")) {
+		visit_url("da.php?barrelshrine=1");
+		visit_url("choice.php?whichchoice=1100&option=4&pwd="+my_hash());
+	}
 	while (free_rest()) {} //expends all free rests
 	drink(1, $item[emergency margarita]);
 	maximize("adv", false);
@@ -1248,6 +1310,8 @@ void day2setup() {
 	if (!have_skill($skill[Spirit of Rigatoni])) {
 		pulverize($item[Staff of the Headmaster's Victuals]);
 	}
+	visit_url("da.php?barrelshrine=1");
+	visit_url("choice.php?whichchoice=1100&option=1&pwd="+my_hash());
 	saveProgress(18);
 }
 
