@@ -20,7 +20,7 @@ int [string] statemap;
 
 boolean actuallyrun = false;
 
-////fix comabt handling if it still doesn't work, probably does now
+////fix combat handling if it still doesn't work, probably does now
 ////add puck-man logic maybe (unlocking the woods and stuff)
 ////allow running before ascending to check prereqs then
 
@@ -866,6 +866,7 @@ void moxieTest() {
 		chateauCast($skill[Disco Fever]);
 		chateauCast($skill[Moxie of the Mariachi]);
 		chateauCast($skill[Disco Aerobics]);
+		chateauCast($skill[Blubber Up]);
 		useIfHave(1, $item[dollop of barbecue sauce]);
 		useIfHave(1, $item[pressurized potion of pulchritude]);
 		useIfHave(1, $item[serum of sarcasm]);
@@ -988,6 +989,9 @@ void powerlevel() {
 				}
 				int turnsfarmed = 0;
 				while (my_level() < 9 && turnsfarmed < 10) {
+					if (my_adventures() == 0) {
+						abort("Ran out of adventures.");
+					}
 					combatAdv(farmzone, true);
 					if (have_effect($effect[beaten up]) > 0) {
 						abort("Getting beaten up when trying to powerlevel. Consider changing custom combat script?");
@@ -1030,6 +1034,8 @@ void getMilk() {
 	}
 	if($item[glass of goat's milk].available_amount() == 0) {
 		abort("Failed to retrieve milk.");
+	} else {
+		create(1, $item[milk of magnesium]);
 	}
 	if ($item[Gene Tonic: Beast].available_amount() > 0) {
 		visit_url("campground.php?action=dnapotion");
@@ -1058,6 +1064,9 @@ void getCalderaDNA() {
 		}
 		calderaMood();
 		while(have_effect($effect[Human-Fish Hybrid]) == 0 && ($item[Gene Tonic: Elemental].available_amount() == 0 || get_property_boolean("stenchAirportAlways"))) { //if got fish DNA and either elemental DNA or have Dinsey open
+			if (my_adventures() == 0) {
+				abort("Ran out of adventures.");
+			}
 			combatAdv($location[The Bubblin' Caldera], true);
 			if (have_effect($effect[Beaten Up]) > 0) {
 				print("You got whupped...", "red");
@@ -1072,7 +1081,14 @@ void getCalderaDNA() {
 		}
 		cli_execute("mood clear");
 		while ($item[Gene Tonic: Elemental].available_amount() == 0 && get_property_boolean("stenchAirportAlways")) {
+			if (my_adventures() == 0) {
+				abort("Ran out of adventures.");
+			}
 			combatAdv($location[Barf Mountain], true);
+			buffer page = visit_url("campground.php?action=workshed");
+			if (contains_text(page, "Human-Elemental Hybrid") && $item[Gene Tonic: Elemental].available_amount() == 0) {
+				visit_url("campground.php?action=dnapotion");
+			}
 		}
 	}
 	saveProgress(6);
