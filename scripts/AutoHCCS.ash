@@ -652,6 +652,7 @@ void weaponTest() {
 		chateauCast($skill[Jackasses' Symphony of Destruction]);
 		chateauCast($skill[Tenacity of the Snapper]);
 		chateauCast($skill[Song of the North]);
+		useIfHave(1, $item[Gene Tonic: Beast]);
 		while (my_level() < 8 && free_rest()) {} //expends free rests until level 8 or running out
 		if (my_level() < 8) {
 			print("Failed to reach level 8 with chateau rests...oh well", "red");
@@ -1037,7 +1038,7 @@ void getMilk() {
 	} else {
 		create(1, $item[milk of magnesium]);
 	}
-	if ($item[Gene Tonic: Beast].available_amount() > 0) {
+	if ($item[Gene Tonic: Beast].available_amount() == 0 && $item[DNA extraction syringe].available_amount() > 0) {
 		visit_url("campground.php?action=dnapotion");
 	}
 	saveProgress(3);
