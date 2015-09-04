@@ -20,9 +20,10 @@ int [string] statemap;
 
 boolean actuallyrun = false;
 
-////fix combat handling if it still doesn't work, probably does now
+////I'm not sure if calderaMood actually works right, it only cast elemental saucesphere last time
 ////add puck-man logic maybe (unlocking the woods and stuff)
 ////allow running before ascending to check prereqs then
+////actually check how many free crafts are remaining instead of the moronic BS I currently do
 
 void loadSave() {
 	file_to_map("AutoHCCSvars.txt", statemap);
@@ -711,6 +712,12 @@ void itemTest() {
 		useIfHave(1, $item[Gene Tonic: Pirate]);
 		useIfHave(1, $item[tin cup]);
 		useIfHave($item[pulled yellow taffy].available_amount(), $item[pulled yellow taffy]);
+		if ($item[Dinsey Whinskey].available_amount() > 0 && my_inebriety() < 13) {
+			if (have_effect($effect[Ode to Booze]) < 2) {
+				chateauCast($skill[The Ode to Booze]);
+			}
+			use(1, $item[Dinsey Whinskey]);
+		}
 		if ($item[Agitated Turkey].available_amount() > 0 && my_inebriety() < 14) {
 			if (have_effect($effect[Ode to Booze]) == 0) {
 				chateauCast($skill[The Ode to Booze]);
@@ -1061,7 +1068,7 @@ void getCalderaDNA() {
 	}
 	if (get_property_boolean("hotAirportAlways") && $item[DNA extraction syringe].available_amount() > 0) {
 		if (have_effect($effect[Song of Sauce]) == 0) {
-			chateauCast($skill[Song of Sauce]);
+			chateauCast($skill[Song of Sauce]); //hot-aligned monsters effectively take half damage from Saucegeyser so this compensates for it, allowing a 1-shot
 		}
 		calderaMood();
 		while(have_effect($effect[Human-Fish Hybrid]) == 0 && ($item[Gene Tonic: Elemental].available_amount() == 0 || get_property_boolean("stenchAirportAlways"))) { //if got fish DNA and either elemental DNA or have Dinsey open
@@ -1090,6 +1097,12 @@ void getCalderaDNA() {
 			if (contains_text(page, "Human-Elemental Hybrid") && $item[Gene Tonic: Elemental].available_amount() == 0) {
 				visit_url("campground.php?action=dnapotion");
 			}
+		}
+		if ($item[bag of park garbage].available_amount() > 0) {
+			visit_url("place.php?whichplace=airport_stench&action=airport3_tunnels");
+			visit_url("choice.php?pwd&whichchoice=1067&option=6&choiceform6=Waste+Disposal");
+			visit_url("choice.php?pwd&whichchoice=1067&option=7&choiceform7=Exit");
+			buy($coinmaster[The Dinsey Company Store], 1, $item[Dinsey Whinskey]);
 		}
 	}
 	saveProgress(6);
