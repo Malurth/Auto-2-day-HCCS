@@ -1,7 +1,7 @@
 script "Automatic 2-day Hardcore Community Service";
 notify aabattery;
 //courtesy of yojimboS_LAW's 2-day HC guide
-//shoutouts to Cheesecookie and Ezandora for contributing a bit of code/advice
+//shoutouts to Cheesecookie, Ezandora, and Cannonfire40 for contributing a bit of code/advice
 
 //woulda liked a #define or const here but hey I'll take what I can get
 int HPTEST = 1;
@@ -1310,8 +1310,10 @@ void day2setup() {
 	if (!have_skill($skill[Spirit of Rigatoni])) {
 		pulverize($item[Staff of the Headmaster's Victuals]);
 	}
-	visit_url("da.php?barrelshrine=1");
-	visit_url("choice.php?whichchoice=1100&option=1&pwd="+my_hash());
+	if(get_property_boolean("barrelShrineUnlocked")) {
+		visit_url("da.php?barrelshrine=1");
+		visit_url("choice.php?whichchoice=1100&option=1&pwd="+my_hash());
+	}
 	saveProgress(18);
 }
 
