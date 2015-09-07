@@ -236,7 +236,7 @@ void calderaMood() {
 		cli_execute("trigger lose_effect, Cletus's Canticle of Celerity, cast 1 Cletus's Canticle of Celerity");
 	}
 	if (have_skill($skill[Sauce Contemplation])) {
-		cli_execute("trigger lose_effect, Sauce Contemplation, cast 1 Sauce Contemplation");
+		cli_execute("trigger lose_effect, Saucemastery, cast 1 Sauce Contemplation");
 	}
 	if (have_skill($skill[Patience of the Tortoise])) {
 		cli_execute("trigger lose_effect, Patience of the Tortoise, cast 1 Patience of the Tortoise");
@@ -734,13 +734,13 @@ void itemTest() {
 			if (have_effect($effect[Ode to Booze]) < 2) {
 				chateauCast($skill[The Ode to Booze]);
 			}
-			use(1, $item[Dinsey Whinskey]);
+			drink(1, $item[Dinsey Whinskey]);
 		}
 		if ($item[Agitated Turkey].available_amount() > 0 && my_inebriety() < 14) {
 			if (have_effect($effect[Ode to Booze]) == 0) {
 				chateauCast($skill[The Ode to Booze]);
 			}
-			use(1, $item[Agitated Turkey]);
+			drink(1, $item[Agitated Turkey]);
 		}
 		chateauCast($skill[Fat Leon's Phat Loot Lyric]);
 		chateauCast($skill[Singer's Faithful Ocelot]);
@@ -923,7 +923,7 @@ void famTest() {
 		if($item[vintage smart drink].available_amount() > 0) {
 			chateauCast($skill[The Ode to Booze]);
 			chateauCast($skill[The Ode to Booze]);
-			use(1, $item[vintage smart drink]);
+			drink(1, $item[vintage smart drink]);
 		}
 		saveProgress(35);
 	}
