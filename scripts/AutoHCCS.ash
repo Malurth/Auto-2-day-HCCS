@@ -20,7 +20,6 @@ int [string] statemap;
 
 boolean actuallyrun = false;
 
-////I'm not sure if calderaMood actually works right, it only cast elemental saucesphere last time
 ////add puck-man logic maybe (unlocking the woods and stuff)
 ////allow running before ascending to check prereqs then
 ////actually check how many free crafts are remaining instead of the moronic BS I currently do
@@ -217,23 +216,32 @@ void calderaMood() {
 	cli_execute("mood clear");
 	if (have_skill($skill[Elemental Saucesphere])) {
 		cli_execute("trigger lose_effect, Elemental Saucesphere, cast 1 Elemental Saucesphere");
-	} else if (have_skill($skill[Astral Shell])) {
+	}
+	if (have_skill($skill[Astral Shell])) {
 		cli_execute("trigger lose_effect, Astral Shell, cast 1 Astral Shell");
-	} else if (have_skill($skill[Reptilian Fortitude])) {
+	}
+	if (have_skill($skill[Reptilian Fortitude])) {
 		cli_execute("trigger lose_effect, Reptilian Fortitude, cast 1 Reptilian Fortitude");
-	} else if (have_skill($skill[Springy Fusilli])) {
+	}
+	if (have_skill($skill[Springy Fusilli])) {
 		cli_execute("trigger lose_effect, Springy Fusilli, cast 1 Springy Fusilli");
-	} else if (have_skill($skill[The Power Ballad of the Arrowsmith])) {
+	} 
+	if (have_skill($skill[The Power Ballad of the Arrowsmith])) {
 		cli_execute("trigger lose_effect, The Power Ballad of the Arrowsmith, cast 1 The Power Ballad of the Arrowsmith");
-	} else if (have_skill($skill[Suspicious Gaze])) {
+	} 
+	if (have_skill($skill[Suspicious Gaze])) {
 		cli_execute("trigger lose_effect, Suspicious Gaze, cast 1 Suspicious Gaze");
-	} else if (have_skill($skill[Cletus's Canticle of Celerity])) {
+	} 
+	if (have_skill($skill[Cletus's Canticle of Celerity])) {
 		cli_execute("trigger lose_effect, Cletus's Canticle of Celerity, cast 1 Cletus's Canticle of Celerity");
-	} else if (have_skill($skill[Sauce Contemplation])) {
+	}
+	if (have_skill($skill[Sauce Contemplation])) {
 		cli_execute("trigger lose_effect, Sauce Contemplation, cast 1 Sauce Contemplation");
-	} else if (have_skill($skill[Patience of the Tortoise])) {
+	}
+	if (have_skill($skill[Patience of the Tortoise])) {
 		cli_execute("trigger lose_effect, Patience of the Tortoise, cast 1 Patience of the Tortoise");
-	} else if (have_skill($skill[Moxie of the Mariachi])) {
+	} 
+	if (have_skill($skill[Moxie of the Mariachi])) {
 		cli_execute("trigger lose_effect, Moxie of the Mariachi, cast 1 Moxie of the Mariachi");
 	}
 	cli_execute("mood execute");
