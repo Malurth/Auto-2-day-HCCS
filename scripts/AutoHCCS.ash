@@ -656,11 +656,19 @@ void weaponTest() {
 		useIfHave(1, $item[Gene Tonic: Beast]);
 		while (my_level() < 8 && free_rest()) {} //expends free rests until level 8 or running out
 		if (my_level() < 8) {
-			print("Failed to reach level 8 with chateau rests...oh well", "red");
-		} else if (free_rests_left() > 0) {
-			print("Reached level 8 with "+ free_rests_left() +" free rests left", "green");
+			print("Failed to reach level 8 with chateau rests...eating sleeping dog to compensate", "red");
+			useIfHave(1, $item[milk of magnesium]);
+			eatHotdog(-101); //sleeping dog
+			while (my_level() < 8 && free_rest()) {}
+		} 
+		if (my_level() < 8) {
+			print("Still failed to reach level 8.", "red");
 		} else {
-			print("Reaced level 8, but ran out of free rests", "blue");
+			if (free_rests_left() > 0) {
+				print("Reached level 8 with "+ free_rests_left() +" free rests left", "green");
+			} else {
+				print("Reaced level 8, but ran out of free rests", "blue");
+			}
 		}
 		saveProgress(9);
 	}
@@ -692,7 +700,9 @@ void itemTest() {
 	if(statemap["questStage"] == 11) {
 		//eat food
 		use(1, $item[milk of magnesium]);
-		eatHotdog(-101); //sleeping dog
+		if (my_fullness() < 2) {
+			eatHotdog(-101); //sleeping dog
+		}
 		eat(1, $item[weird gazelle steak]);
 		eat(1, $item[This Charming Flan]);
 		if ($item[snow crab].available_amount() > 0) {
@@ -833,6 +843,7 @@ void muscleTest() {
 		chateauCast($skill[Patience of the Tortoise]);
 		useIfHave(1, $item[jar of &quot;Creole Lady&quot; marrrmalade]);
 		useIfHave(1, $item[dollop of barbecue sauce]);
+		useIfHave(1, $item[Ben-Gal&trade; Balm]);
 		if (have_effect($effect[Phorcefullness]) == 0) {
 			useIfHave(1, $item[philter of phorce]);
 		}
@@ -856,6 +867,8 @@ void mystTest() {
 		chateauCast($skill[Sauce Contemplation]);
 		chateauCast($skill[Manicotti Meditation]);
 		useIfHave(1, $item[ointment of the occult]);
+		buy(1, $item[glittery mascara]);
+		use(1, $item[glittery mascara]);
 		allStatBuffs();
 		giantGrowth();
 		useIfHave(1, $item[bag of grain]);
@@ -878,6 +891,8 @@ void moxieTest() {
 		useIfHave(1, $item[dollop of barbecue sauce]);
 		useIfHave(1, $item[pressurized potion of pulchritude]);
 		useIfHave(1, $item[serum of sarcasm]);
+		buy(1, $item[hair spray]);
+		use(1, $item[hair spray]);
 		if (have_effect($effect[Expert Oiliness]) == 0) {
 			useIfHave(1, $item[oil of expertise]);
 		}
@@ -942,6 +957,8 @@ void powerlevel() {
 			if(statemap["questStage"] == 24) {
 				useIfHave(1, $item[ointment of the occult]);
 				useIfHave(1, $item[experimental serum G-9]);
+				buy(5, $item[glittery mascara]);
+				use(5, $item[glittery mascara]);
 				if ($item[hot ashes].available_amount() > 1) {
 					create(1, $item[ash soda]);
 					use(1, $item[ash soda]);
@@ -952,6 +969,7 @@ void powerlevel() {
 				chateauCast($skill[Ur-Kel's Aria of Annoyance]);
 				chateauCast($skill[Pride of the Puffin]);
 				chateauCast($skill[Drescher's Annoying Noise]);
+				chateauCast($skill[Song of Sauce]);
 				chateauCast($skill[Leash of Linguini]);
 				chateauCast($skill[Empathy of the Newt]);
 				chateauCast($skill[Empathy of the Newt]);
