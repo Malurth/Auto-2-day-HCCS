@@ -20,6 +20,7 @@ int [string] statemap;
 
 boolean actuallyrun = false;
 
+////maybe switch to artificial skylight and back; exchanges 3k meat for +3 adv gen
 ////add puck-man logic maybe (unlocking the woods and stuff)
 ////allow running before ascending to check prereqs then
 ////actually check how many free crafts are remaining instead of the moronic BS I currently do
@@ -1056,6 +1057,7 @@ void getMilk() {
 	if(statemap["questStage"] >= 3) {
 		return;
 	}
+	saveProgress(3);
 	if (get_property("chateauMonster") == "dairy goat") {
 		visit_url("place.php?whichplace=chateau&action=chateau_painting");
 		adventure(1, $location[Noob Cave], "combat"); //I'm told this works. 
@@ -1078,7 +1080,6 @@ void getMilk() {
 	if ($item[Gene Tonic: Beast].available_amount() == 0 && $item[DNA extraction syringe].available_amount() > 0) {
 		visit_url("campground.php?action=dnapotion");
 	}
-	saveProgress(3);
 }
 
 void getPirateDNA() {
