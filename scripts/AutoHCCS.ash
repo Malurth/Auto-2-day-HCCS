@@ -342,7 +342,7 @@ string combat(int round, string opp, string text) { //always uses your own custo
 	} else if (opp.contains_text("hippy") || opp.contains_text("Frat Boy") || opp == $monster[novelty tropical skeleton].to_string() || opp == $monster[factory worker (female)].to_string() || opp == $monster[factory overseer (female)].to_string()) {
 		return combatYR();
 	} else if (opp == $monster[fluffy bunny].to_string()) {
-		if (round == 1) {
+		if (round == 0) {
 			return "skill Giant Growth";
 		} else {
 			return "item Louder Than Bomb";
@@ -486,9 +486,10 @@ boolean giantGrowth() {
 	if(!have_skill($skill[Giant Growth]) || $item[Louder Than Bomb].available_amount() == 0 || $item[green mana].available_amount() == 0) {
 		return false;
 	} else {
+		restore_hp(my_maxhp());
 		familiar curfam = my_familiar();
 		use_familiar($familiar[none]);
-		combatAdv($location[The Dire Warren], false);
+		adv1($location[The Dire Warren], -1, "combat");
 		use_familiar(curfam);
 		if(have_effect($effect[Giant Growth]) > 0) {
 			return true;
@@ -768,8 +769,8 @@ void allStatBuffs() {
 	if (have_effect($effect[Stevedave's Shanty of Superiority]) == 0) {
 		chateauCast($skill[Stevedave's Shanty of Superiority]);
 	} 
-	if (have_effect($effect[Smithsness Presence]) == 0) {
-		useIfHave(1, $item[handful of Smithereens]);
+	if (have_effect($effect[Smithsness Presence]) == 0 && $item[handful of Smithereens].available_amount() > 0) {
+		chew(1, $item[handful of Smithereens]);
 	}
 	if (get_property_int("_speakeasyDrinksDrunk") < 3 && have_effect($effect[On the Trolley]) == 0 && my_inebriety() <= 12) {
 		if (have_effect($effect[Ode to Booze]) < 2) {
@@ -1023,7 +1024,7 @@ void powerlevel() {
 					farmzone = $location[Video Game Level 1];
 				}
 				int turnsfarmed = 0;
-				while (my_level() < 9 && turnsfarmed < 10) {
+				while (turnsfarmed < 10) {
 					if (my_adventures() == 0) {
 						abort("Ran out of adventures.");
 					}
@@ -1034,6 +1035,7 @@ void powerlevel() {
 					restore_hp(my_maxhp());
 					turnsfarmed += 1;
 				}
+				cli_execute("mood clear");
 				saveProgress(26);
 			}
 		}
@@ -1061,24 +1063,14 @@ void getMilk() {
 	if (get_property("chateauMonster") == "dairy goat") {
 		visit_url("place.php?whichplace=chateau&action=chateau_painting");
 		adventure(1, $location[Noob Cave], "combat"); //I'm told this works. 
-		/*if ($item[DNA extraction syringe].available_amount() > 0 && $item[Gene Tonic: Beast].available_amount() == 0) {
-			if (have_skill($skill[Ambidextrous Funkslinging])) {
-				visit_url("fight.php?action=useitem&whichitem=7383&whichitem2=7013&useitem=Use+Item%28s%29"); //7383 = syringe, 7013 = golden light
-			} else {
-				visit_url("fight.php?action=useitem&whichitem=7383&whichitem2=0&useitem=Use+Item%28s%29");
-				visit_url("fight.php?action=useitem&whichitem=7013&whichitem2=0&useitem=Use+Item%28s%29");
-			}
-		} else {
-			visit_url("fight.php?action=useitem&whichitem=7013&whichitem2=0&useitem=Use+Item%28s%29"); 
-		} */
+	}
+	if ($item[Gene Tonic: Beast].available_amount() == 0 && $item[DNA extraction syringe].available_amount() > 0) {
+		visit_url("campground.php?action=dnapotion");
 	}
 	if($item[glass of goat's milk].available_amount() == 0) {
 		abort("Failed to retrieve milk.");
 	} else {
 		create(1, $item[milk of magnesium]);
-	}
-	if ($item[Gene Tonic: Beast].available_amount() == 0 && $item[DNA extraction syringe].available_amount() > 0) {
-		visit_url("campground.php?action=dnapotion");
 	}
 }
 
@@ -1317,8 +1309,6 @@ void day1setup() {
 	use(3, $item[Flaskfull of Hollow]);
 	if (!have_familiar($familiar[Crimbo Shrub])) {
 		create(2, $item[Golden Light]);
-	} else {
-		create(1, $item[Golden Light]);  ////Change to 0 once I implement dairy goat crimbo shrub YR
 	}
 	create(1, $item[This Charming Flan]);
 	buy(1, $item[frilly skirt]);
