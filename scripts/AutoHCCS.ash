@@ -541,7 +541,7 @@ boolean hasScalingZone() {
 }
 
 void eatHotFood() {
-	use(1, $item[milk of magnesium]);
+	useIfHave(1, $item[milk of magnesium]);
 	eat(1, $item[sausage without a cause]);
 	if (hotdogAvailable(-99)) { //junkyard dog
 		visit_url("clan_viplounge.php?preaction=eathotdog&whichdog=-99");
@@ -699,7 +699,7 @@ void weaponTest() {
 void itemTest() {
 	if(statemap["questStage"] == 11) {
 		//eat food
-		use(1, $item[milk of magnesium]);
+		useIfHave(1, $item[milk of magnesium]);
 		if (my_fullness() < 2) {
 			eatHotdog(-101); //sleeping dog
 		}
@@ -1040,6 +1040,10 @@ void getTurtleTotem() {
 
 void getMilk() {
 	chateauCast($skill[Springy Fusilli]);
+	chateauCast($skill[Reptilian Fortitude]);
+	chateauCast($skill[Astral Shell]);
+	chateauCast($skill[Cletus's Canticle of Celerity]);
+	chateauCast($skill[Sauce Contemplation]);
 	restore_hp(my_maxhp());
 	if(statemap["questStage"] >= 3) {
 		return;
