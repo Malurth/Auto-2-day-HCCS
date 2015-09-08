@@ -24,6 +24,8 @@ boolean actuallyrun = false;
 ////add puck-man logic maybe (unlocking the woods and stuff)
 ////allow running before ascending to check prereqs then
 ////actually check how many free crafts are remaining instead of the moronic BS I currently do
+////switch off fist turkey after a drop
+////figure out how to stop kolmafia from aborting when your semirare counter is up :/
 
 void loadSave() {
 	file_to_map("AutoHCCSvars.txt", statemap);
@@ -272,6 +274,7 @@ void chateauCast(skill which) { //casts the skill as normal (if you have it), un
 
 boolean doTest(int which) {
 	if (my_adventures() >= advCost(which)) {
+		print("Undertaking community service task at a cost of " + advCost(which) + " adventures", "blue");
 		visit_url("choice.php?whichchoice=1089&option="+which+"&pwd="+my_hash());
 		return true;
 	} else {
@@ -731,6 +734,7 @@ void itemTest() {
 		//buff item drop
 		useIfHave(1, $item[Gene Tonic: Pirate]);
 		useIfHave(1, $item[tin cup]);
+		useIfHave(1, $item[cyclops eyedrops]);
 		useIfHave($item[pulled yellow taffy].available_amount(), $item[pulled yellow taffy]);
 		if ($item[Dinsey Whinskey].available_amount() > 0 && my_inebriety() < 13) {
 			if (have_effect($effect[Ode to Booze]) < 2) {
@@ -782,7 +786,6 @@ void allStatBuffs() {
 
 void hpTest() {
 	if(statemap["questStage"] == 26) {
-		cli_execute("cheat strength");
 		use(1, $item[oil of expertise]);
 		useIfHave(1, $item[scroll of Puddingskin]);
 		useIfHave(1, $item[philter of phorce]);
@@ -807,6 +810,11 @@ void hpTest() {
 	
 	if(statemap["questStage"] == 27) {
 		maximize("hp", false);
+		if(advCost(HPTEST) > 4) {
+			chateauCast($skill[The Ode to Booze]);
+			chateauCast($skill[The Ode to Booze]);
+			drink(1, $item[vintage smart drink]);
+		}
 		if(doTest(HPTEST)) {
 			chew(1, $item[blood-drive sticker]);
 		}
@@ -843,6 +851,7 @@ void coilTest() {
 
 void muscleTest() {
 	if(statemap["questStage"] == 28) {
+		cli_execute("cheat strength");
 		if (have_effect($effect[Power Ballad of the Arrowsmith]) == 0) {
 			chateauCast($skill[The Power Ballad of the Arrowsmith]);
 		} 
@@ -975,17 +984,28 @@ void powerlevel() {
 				}
 				chateauCast($skill[The Ode to Booze]);
 				visit_url("clan_viplounge.php?preaction=speakeasydrink&drink=5&pwd="+my_hash()); //bee's knees
+				//okay I prolly should have made another function that accepted a # of casts parameter but whatever
+				chateauCast($skill[Ur-Kel's Aria of Annoyance]);
 				chateauCast($skill[Ur-Kel's Aria of Annoyance]);
 				chateauCast($skill[Ur-Kel's Aria of Annoyance]);
 				chateauCast($skill[Pride of the Puffin]);
+				chateauCast($skill[Pride of the Puffin]);
 				chateauCast($skill[Drescher's Annoying Noise]);
 				chateauCast($skill[Song of Sauce]);
+				chateauCast($skill[Song of Sauce]);
+				chateauCast($skill[Leash of Linguini]);
 				chateauCast($skill[Leash of Linguini]);
 				chateauCast($skill[Empathy of the Newt]);
 				chateauCast($skill[Empathy of the Newt]);
+				chateauCast($skill[Empathy of the Newt]);
+				chateauCast($skill[Wry Smile]);
 				chateauCast($skill[Wry Smile]);
 				chateauCast($skill[Aloysius' Antiphon of Aptitude]);
 				chateauCast($skill[Aloysius' Antiphon of Aptitude]);
+				chateauCast($skill[Aloysius' Antiphon of Aptitude]);
+				chateauCast($skill[Stevedave's Shanty of Superiority]);
+				chateauCast($skill[Stevedave's Shanty of Superiority]);
+				chateauCast($skill[Stevedave's Shanty of Superiority]);
 				while (free_rests_left() > 1) {
 					free_rest();
 				}
@@ -1024,7 +1044,7 @@ void powerlevel() {
 					farmzone = $location[Video Game Level 1];
 				}
 				int turnsfarmed = 0;
-				while (turnsfarmed < 10) {
+				while (turnsfarmed < 15) {
 					if (my_adventures() == 0) {
 						abort("Ran out of adventures.");
 					}
@@ -1125,7 +1145,11 @@ void getCalderaDNA() {
 			visit_url("place.php?whichplace=airport_stench&action=airport3_tunnels");
 			visit_url("choice.php?pwd&whichchoice=1067&option=6&choiceform6=Waste+Disposal");
 			visit_url("choice.php?pwd&whichchoice=1067&option=7&choiceform7=Exit");
-			buy($coinmaster[The Dinsey Company Store], 1, $item[Dinsey Whinskey]);
+			if ($item[bag of park garbage].available_amount() >= 4) {
+				buy($coinmaster[The Dinsey Company Store], 2, $item[Dinsey Whinskey]);
+			} else {
+				buy($coinmaster[The Dinsey Company Store], 1, $item[Dinsey Whinskey]);
+			}
 		}
 	}
 	saveProgress(6);
@@ -1156,6 +1180,7 @@ void maybeUnlockIsland() { //either unlocks island or decides to just do skeleto
 	getSRifCan();
 	if ((advToSemirare() % 3 == 0 && advToSemirare() < 10) || (get_property_boolean("spookyAirportAlways") && advToSemirare() > 9)) { //if the SR is perfectly between shore trips OR it'll come up during G9 farming
 		while ($item[Shore Inc. Ship Trip Scrip].available_amount() < 3) {
+			visit_url("adventure.php?snarfblat=355");
 			visit_url("choice.php?"+my_hash()+"&whichchoice=793&option=2&choiceform2=Tropical+Paradise+Island+Getaway");
 			getSRifCan();
 		}
@@ -1272,10 +1297,25 @@ void endDay1() { //final actions of day 1; spell test buffing goes here
 		visit_url("da.php?barrelshrine=1");
 		visit_url("choice.php?whichchoice=1100&option=4&pwd="+my_hash());
 	}
+	if (my_inebriety() < 14) {
+		chateauCast($skill[The Ode to Booze]);
+		while (my_inebriety() < 14) {
+			if (my_inebriety() < 13 && $item[Dinsey Whinskey].available_amount() > 0) {
+				drink(1, $item[Dinsey Whinskey]);
+			}
+			if ($item[astral pilsner].available_amount() > 0) {
+				drink(1, $item[astral pilsner]);
+			} else if ($item[Agitated Turkey].available_amount() > 0) {
+				drink(1, $item[Agitated Turkey]);
+			} else {
+				break;
+			}
+		}
+	}
 	while (free_rest()) {} //expends all free rests
-	drink(1, $item[emergency margarita]);
 	maximize("adv", false);
 	saveProgress(17);
+	drink(1, $item[emergency margarita]);
 }
 
 void day1setup() {
