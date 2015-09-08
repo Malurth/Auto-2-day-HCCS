@@ -1145,7 +1145,7 @@ void getCalderaDNA() {
 			visit_url("place.php?whichplace=airport_stench&action=airport3_tunnels");
 			visit_url("choice.php?pwd&whichchoice=1067&option=6&choiceform6=Waste+Disposal");
 			visit_url("choice.php?pwd&whichchoice=1067&option=7&choiceform7=Exit");
-			if ($item[bag of park garbage].available_amount() >= 4) {
+			if ($item[FunFunds&trade;].available_amount() >= 4) {
 				buy($coinmaster[The Dinsey Company Store], 2, $item[Dinsey Whinskey]);
 			} else {
 				buy($coinmaster[The Dinsey Company Store], 1, $item[Dinsey Whinskey]);
