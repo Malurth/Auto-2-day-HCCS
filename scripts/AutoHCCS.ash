@@ -1302,8 +1302,7 @@ void endDay1() { //final actions of day 1; spell test buffing goes here
 		while (my_inebriety() < 14) {
 			if (my_inebriety() < 13 && $item[Dinsey Whinskey].available_amount() > 0) {
 				drink(1, $item[Dinsey Whinskey]);
-			}
-			if ($item[astral pilsner].available_amount() > 0) {
+			} else if ($item[astral pilsner].available_amount() > 0) {
 				drink(1, $item[astral pilsner]);
 			} else if ($item[Agitated Turkey].available_amount() > 0) {
 				drink(1, $item[Agitated Turkey]);
