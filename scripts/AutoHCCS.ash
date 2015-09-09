@@ -25,7 +25,6 @@ boolean actuallyrun = false;
 ////allow running before ascending to check prereqs then
 ////actually check how many free crafts are remaining instead of the moronic BS I currently do
 ////switch off fist turkey after a drop
-////figure out how to stop kolmafia from aborting when your semirare counter is up :/
 
 void loadSave() {
 	file_to_map("AutoHCCSvars.txt", statemap);
@@ -504,6 +503,7 @@ boolean giantGrowth() {
 
 boolean getSRifCan() { //returns true if got it
 	if (advToSemirare() == 0) {
+		cli_execute("counters clear"); //otherwise it aborts
 		if (checkGarden() == "winter") {
 			adventure(1, $location[The Limerick Dungeon], "combat");
 		} else { 
@@ -1284,6 +1284,88 @@ void makePotionsDay2() {
 	saveProgress(21);
 }
 
+void drinkBestSize1() { //I prolly should have had this take a "how many" argument but eh whatever
+	if ($item[astral pilsner].available_amount() > 0) {
+		drink(1, $item[astral pilsner]);
+	} else if ($item[Ambitious Turkey].available_amount() > 0) {
+		drink(1, $item[Ambitious Turkey]);
+	} else if ($item[Agitated Turkey].available_amount() > 0) {
+		drink(1, $item[Agitated Turkey]);
+	} else if ($item[thermos full of Knob coffee].available_amount() > 0) {
+		drink(1, $item[thermos full of Knob coffee]);
+	} else if ($item[Cold One].available_amount() > 0) {
+		drink(1, $item[Cold One]);
+	} else if (get_property_int("_speakeasyDrinksDrunk") < 3) {
+		visit_url("clan_viplounge.php?preaction=speakeasydrink&drink=4&pwd="+my_hash()); //lucky lindy
+	} else {
+		print("Failed to fill liver (no size-1 booze left).", "red");
+	}
+}
+
+void nightcap() {
+	if (my_inebriety() < 14) { //ideally I would use some algorithm to solve for the knapsack problem but meh whatever this'll do
+		//size 1 booze always preferred over size 2 booze; a level 8 Cold One is slightly worse than Whinskey, but it either doesn't compete with it or is accompanied by another better 1-size booze
+		int size1s = $item[astral pilsner].available_amount() + $item[Ambitious Turkey].available_amount() + $item[Agitated Turkey].available_amount() + $item[thermos full of Knob coffee].available_amount() + $item[Cold One].available_amount();
+		if (my_inebriety() == 13) {
+			drinkBestSize1();
+		} else if (my_inebriety() == 12) {
+			if (size1s > 1) { 
+				drinkBestSize1();
+				drinkBestSize1();
+			} else if ($item[Dinsey Whinskey].available_amount() > 0) {
+				drink(1, $item[Dinsey Whinskey]);
+			} else if (get_property_int("_speakeasyDrinksDrunk") < 3) {
+				visit_url("clan_viplounge.php?preaction=speakeasydrink&drink=6&pwd="+my_hash()); //sockadollager; saves 2 turns on spell dmg test but is still the worst for daycount overall
+			} else { //drink what you can
+				drinkBestSize1();
+			}
+		} else if (my_inebriety() == 11) {
+			if (size1s > 2) {
+				drinkBestSize1();
+				drinkBestSize1();
+				drinkBestSize1();
+			} else if ($item[Dinsey Whinskey].available_amount() > 0) {
+				drink(1, $item[Dinsey Whinskey]);
+				drinkBestSize1();
+			} else if (get_property_int("_speakeasyDrinksDrunk") < 3) {
+				visit_url("clan_viplounge.php?preaction=speakeasydrink&drink=6&pwd="+my_hash()); //sockadollager
+				drinkBestSize1();
+			} else { //drink what you can
+				drinkBestSize1();
+				drinkBestSize1();
+			}
+		} else if (my_inebriety() == 10) {
+			if (size1s > 3) {
+				drinkBestSize1();
+				drinkBestSize1();
+				drinkBestSize1();
+				drinkBestSize1();
+			} else if ($item[Dinsey Whinskey].available_amount() > 0 && size1s > 1) {
+				drink(1, $item[Dinsey Whinskey]);
+				drinkBestSize1();
+				drinkBestSize1();
+			} else if (get_property_int("_speakeasyDrinksDrunk") < 3 && size1s > 1) {
+				visit_url("clan_viplounge.php?preaction=speakeasydrink&drink=6&pwd="+my_hash()); //sockadollager
+				drinkBestSize1();
+				drinkBestSize1();
+			} else if ($item[Dinsey Whinskey].available_amount() > 0) { //drink what you can
+				drink(1, $item[Dinsey Whinskey]);
+				drinkBestSize1();
+			} else if (get_property_int("_speakeasyDrinksDrunk") < 3) { //drink what you can
+				visit_url("clan_viplounge.php?preaction=speakeasydrink&drink=6&pwd="+my_hash()); //sockadollager
+				drinkBestSize1();
+			} else { //drink what you can
+				drinkBestSize1();
+				drinkBestSize1();
+				drinkBestSize1();
+			}
+		} else { ////okay hopefully that's enough, lol
+			print("I didn't bother coding what to drink at the end of the day when left with under 10 inebriety. Do it yourself! It's all that's left to do today anyway.", "red");
+		} 
+	}
+	drink(1, $item[emergency margarita]);
+}
+
 void endDay1() { //final actions of day 1; spell test buffing goes here
 	if(statemap["questStage"] >= 17) {
 		return;
@@ -1291,30 +1373,19 @@ void endDay1() { //final actions of day 1; spell test buffing goes here
 	cast($skill[Simmer]);
 	chateauCast($skill[The Ode to Booze]);
 	chateauCast($skill[The Ode to Booze]);
+	if (my_inebriety() < 14) {
+		chateauCast($skill[The Ode to Booze]);
+	}
 	chateauCast($skill[Jackasses' Symphony of Destruction]);
 	chateauCast($skill[Song of Sauce]);
 	if(get_property_boolean("barrelShrineUnlocked")) {
 		visit_url("da.php?barrelshrine=1");
 		visit_url("choice.php?whichchoice=1100&option=4&pwd="+my_hash());
 	}
-	if (my_inebriety() < 14) {
-		chateauCast($skill[The Ode to Booze]);
-		while (my_inebriety() < 14) {
-			if (my_inebriety() < 13 && $item[Dinsey Whinskey].available_amount() > 0) {
-				drink(1, $item[Dinsey Whinskey]);
-			} else if ($item[astral pilsner].available_amount() > 0) {
-				drink(1, $item[astral pilsner]);
-			} else if ($item[Agitated Turkey].available_amount() > 0) {
-				drink(1, $item[Agitated Turkey]);
-			} else {
-				break;
-			}
-		}
-	}
 	while (free_rest()) {} //expends all free rests
 	maximize("adv", false);
+	nightcap();
 	saveProgress(17);
-	drink(1, $item[emergency margarita]);
 }
 
 void day1setup() {
