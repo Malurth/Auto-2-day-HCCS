@@ -1360,7 +1360,7 @@ void nightcap() {
 				drinkBestSize1();
 			}
 		} else { ////okay hopefully that's enough, lol
-			print("I didn't bother coding what to drink at the end of the day when left with under 10 inebriety. Do it yourself! It's all that's left to do today anyway.", "red");
+			abort("I didn't bother coding what to drink at the end of the day when left with under 10 inebriety. Do it yourself! It's all that's left to do today anyway.");
 		} 
 	}
 	drink(1, $item[emergency margarita]);
