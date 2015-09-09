@@ -18,13 +18,14 @@ int COILTEST = 11;
 
 int [string] statemap;
 
-boolean actuallyrun = false;
+boolean actuallyrun = true;
 
 ////maybe switch to artificial skylight and back; exchanges 3k meat for +3 adv gen
 ////add puck-man logic maybe (unlocking the woods and stuff)
 ////allow running before ascending to check prereqs then
 ////actually check how many free crafts are remaining instead of the moronic BS I currently do
 ////switch off fist turkey after a drop
+////maybe modify nightcap code so it doesn't look like ass
 
 void loadSave() {
 	file_to_map("AutoHCCSvars.txt", statemap);
@@ -1063,7 +1064,13 @@ void powerlevel() {
 }
 
 void getTurtleTotem() {
-	while($item[turtle totem].available_amount() < 1) {
+	if (have_skill($skill[Empathy of the Newt]) || have_skill($skill[Astral Shell])) {
+		while($item[turtle totem].available_amount() < 1) {
+			buy(1, $item[chewing gum on a string]);
+			use(1, $item[chewing gum on a string]);
+		}
+	}
+	while($item[saucepan].available_amount() < 1) {
 		buy(1, $item[chewing gum on a string]);
 		use(1, $item[chewing gum on a string]);
 	}
@@ -1430,9 +1437,7 @@ void day1setup() {
 		}
 	}
 	cli_execute("breakfast"); 
-	if (have_skill($skill[Empathy of the Newt]) || have_skill($skill[Astral Shell])) {
-		getTurtleTotem();
-	}
+	getTurtleTotem();
 	if ($item[detuned radio].available_amount() == 0) {
 		buy(1, $item[detuned radio]);
 		change_mcd(11);
