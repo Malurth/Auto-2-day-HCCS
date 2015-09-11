@@ -20,7 +20,6 @@ int [string] statemap;
 
 boolean actuallyrun = true;
 
-////maybe switch to artificial skylight and back; exchanges 3k meat for +3 adv gen
 ////add puck-man logic maybe (unlocking the woods and stuff)
 ////allow running before ascending to check prereqs then
 ////actually check how many free crafts are remaining instead of the moronic BS I currently do
@@ -350,7 +349,7 @@ string combat(int round, string opp, string text) { //always uses your own custo
 		} else {
 			return "item Louder Than Bomb";
 		}
-	} else { //no special case, just use your CCS
+	} else { //no special case, just use the CCS
 		return customCombat(round);
 	}
 }
@@ -486,7 +485,7 @@ int g9val() { //useless in hindsight; we get g9 on day 1 and use it on day 2 so 
 }
 
 boolean giantGrowth() {
-	if(!have_skill($skill[Giant Growth]) || $item[Louder Than Bomb].available_amount() == 0 || $item[green mana].available_amount() == 0) {
+	if(!have_skill($skill[Giant Growth]) || $item[green mana].available_amount() == 0) {
 		return false;
 	} else {
 		restore_hp(my_maxhp());
@@ -1057,6 +1056,7 @@ void powerlevel() {
 					turnsfarmed += 1;
 				}
 				cli_execute("mood clear");
+				pulverize($item[A Light That Never Goes Out]);
 				saveProgress(26);
 			}
 		}
@@ -1391,6 +1391,7 @@ void endDay1() { //final actions of day 1; spell test buffing goes here
 	}
 	while (free_rest()) {} //expends all free rests
 	maximize("adv", false);
+	chateaumantegna_buyStuff($item[Artificial Skylight]);
 	nightcap();
 	saveProgress(17);
 }
@@ -1410,6 +1411,12 @@ void day1setup() {
 	sellJewels();
 	if ($item[astral six-pack].available_amount() == 1) {
 		use(1, $item[astral six-pack]);
+	}
+	if ($item[bitchin' meatcar].available_amount() == 0) {
+		create(1, $item[bitchin' meatcar]);
+	}
+	if (have_skill($skill[Pulverize]) && $item[tenderizing hammer].available_amount() == 0) {
+		buy(1, $item[tenderizing hammer]);
 	}
 	unlockSkeletonStore();
 	cli_execute("cheat mickey");
@@ -1469,7 +1476,7 @@ void day2setup() {
 	create(1, $item[Saucepanic]);
 	if (!have_skill($skill[Double-Fisted Skull Smashing])) {
 		pulverize($item[Saucepanic]);
-	}
+	} 
 	create(1, $item[Vicar's Tutu]);
 	equip($item[Vicar's Tutu]);
 	create(1, $item[Staff of the Headmaster's Victuals]);
@@ -1480,6 +1487,7 @@ void day2setup() {
 		visit_url("da.php?barrelshrine=1");
 		visit_url("choice.php?whichchoice=1100&option=1&pwd="+my_hash());
 	}
+	chateaumantegna_buyStuff($item[Ceiling Fan]);
 	saveProgress(18);
 }
 
