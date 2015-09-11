@@ -553,6 +553,17 @@ boolean hasScalingZone() {
 	}
 }
 
+void earlyEats() {
+	useIfHave(1, $item[milk of magnesium]); //whatever we get 3 milks might was well turngen here to make sure
+	eatHotdog(-101); //sleeping dog
+	if ($item[snow crab].available_amount() > 0) {
+		eat(1, $item[snow crab]);
+	} else if ($item[snow berries].available_amount() >= 2) {
+		create(1, $item[snow crab]);
+		eat(1, $item[snow crab]);
+	} 
+}
+
 void eatHotFood() {
 	useIfHave(1, $item[milk of magnesium]);
 	eat(1, $item[sausage without a cause]);
@@ -669,13 +680,7 @@ void weaponTest() {
 		useIfHave(1, $item[Gene Tonic: Beast]);
 		while (my_level() < 8 && free_rest()) {} //expends free rests until level 8 or running out
 		if (my_level() < 8) {
-			print("Failed to reach level 8 with chateau rests...eating sleeping dog to compensate", "red");
-			useIfHave(1, $item[milk of magnesium]);
-			eatHotdog(-101); //sleeping dog
-			while (my_level() < 8 && free_rest()) {}
-		} 
-		if (my_level() < 8) {
-			print("Still failed to reach level 8.", "red");
+			print("Failed to reach level 8.", "red");
 		} else {
 			if (free_rests_left() > 0) {
 				print("Reached level 8 with "+ free_rests_left() +" free rests left", "green");
@@ -713,9 +718,6 @@ void itemTest() {
 	if(statemap["questStage"] == 11) {
 		//eat food
 		useIfHave(1, $item[milk of magnesium]);
-		if (my_fullness() < 2) {
-			eatHotdog(-101); //sleeping dog
-		}
 		eat(1, $item[weird gazelle steak]);
 		eat(1, $item[This Charming Flan]);
 		if ($item[snow crab].available_amount() > 0) {
@@ -840,6 +842,7 @@ void coilTest() {
 	if(statemap["questStage"] >= 4) {
 		return;
 	}
+	earlyEats();
 	if (my_adventures() >= 60) {
 		doTest(COILTEST);
 		use(1, $item[a ten-percent bonus]);
@@ -1077,16 +1080,16 @@ void getTurtleTotem() {
 }
 
 void getMilk() {
+	if(statemap["questStage"] >= 3) {
+		return;
+	}
+	saveProgress(3);
 	chateauCast($skill[Springy Fusilli]);
 	chateauCast($skill[Reptilian Fortitude]);
 	chateauCast($skill[Astral Shell]);
 	chateauCast($skill[Cletus's Canticle of Celerity]);
 	chateauCast($skill[Sauce Contemplation]);
 	restore_hp(my_maxhp());
-	if(statemap["questStage"] >= 3) {
-		return;
-	}
-	saveProgress(3);
 	if (get_property("chateauMonster") == "dairy goat") {
 		visit_url("place.php?whichplace=chateau&action=chateau_painting");
 		adventure(1, $location[Noob Cave], "combat"); //I'm told this works. 
@@ -1171,7 +1174,7 @@ void getDeodorant() {
 		chateauCast($skill[Carlweather's Cantata of Confrontation]);
 		useIfHave(1, $item[reodorant]);
 		while($item[deodorant].available_amount() > 0) {
-			YRAdv($location[Orcish Frat House]);
+			YRAdv($location[Frat House]);
 		}
 		if(have_effect($effect[Carlweather's Cantata of Confrontation]) > 0) {
 			cli_execute("uneffect " + $effect[Carlweather's Cantata of Confrontation].to_string());
@@ -1191,6 +1194,9 @@ void maybeUnlockIsland() { //either unlocks island or decides to just do skeleto
 			visit_url("choice.php?"+my_hash()+"&whichchoice=793&option=2&choiceform2=Tropical+Paradise+Island+Getaway");
 			getSRifCan();
 		}
+		buy($coinmaster[The Shore, Inc. Gift Shop], 1, $item[dinghy plans]);
+		buy(1, $item[dingy planks]);
+		use(1, $item[dinghy plans]);
 	} else { //1, 2, 4, 5, 7, or 8 adv to semirare or no CI; skeleton store instead...loses tomato/olive but saves initial turns so whatever. Tomato can be found in the pantry anyway
 		skipIsland();
 	}
@@ -1207,7 +1213,7 @@ void getPotionIngredients() {
 		}
 	} else {
 		while ($item[filthy knitted dread sack].available_amount() == 0 || $item[filthy corduroys].available_amount() == 0) {
-			YRAdv($location[The Hippy Camp]);
+			YRAdv($location[Hippy Camp]);
 		}
 		item prevhat = equipped_item($slot[hat]);
 		item prevpants = equipped_item($slot[pants]);
@@ -1216,7 +1222,7 @@ void getPotionIngredients() {
 		while ($item[cherry].available_amount() == 0) {
 			if ($item[disassembled clover].available_amount() > 0) {
 				use(1, $item[disassembled clover]);
-				adventure(1, $location[The Hippy Camp], "combat");
+				adventure(1, $location[Hippy Camp], "combat");
 				use(1, $item[fruit basket]);
 			} else {
 				abort("Failed to get cherry from fruit baskets before running out of clovers.");
