@@ -3,7 +3,7 @@ Automatic 2-day HCCS
 
 What this?
 ----------------
-This is a KoLmafia script to automatically complete the Community Service challenge path in Hardcore within two days. Or attempt to, anyway. It largely follows yojimbo's 2-day HCCS guide, located here: http://forums.kingdomofloathing.com/vb/showpost.php?p=4769933&postcount=345
+This is a KoLmafia script to automatically complete the Community Service challenge path in Hardcore within two days. Or attempt to, anyway. It largely follows yojimbos_law's 2-day HCCS guide, located here: http://forums.kingdomofloathing.com/vb/showpost.php?p=4769933&postcount=345
 
 How use?
 ----------------
@@ -29,3 +29,7 @@ It also expects that you, before ascending:
 - Chose astral pilsners for your consumables
 
 If that's all you have it almost certainly will fail to hit 2-day, but that's the basic stuff needed to run it.
+
+Anything else I should know?
+----------------
+Yes: run at your own risk. At least for now, I am not all that confident in the script's efficacy or even ability to run without bugging out. It has successfully completed a fully automatic 2-day HCCS for me, but only just barely and I have a lot of stuff. It also has not had many test runs done either, so yeah. Code contributions from more skilled coders than I would be welcome :)
