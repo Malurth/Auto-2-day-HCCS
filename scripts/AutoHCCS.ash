@@ -557,12 +557,9 @@ boolean hasScalingZone() {
 void earlyEats() {
 	useIfHave(1, $item[milk of magnesium]); //whatever we get 3 milks might was well turngen here to make sure
 	eatHotdog(-101); //sleeping dog
-	if ($item[snow crab].available_amount() > 0) {
-		eat(1, $item[snow crab]);
-	} else if ($item[snow berries].available_amount() >= 2) {
-		create(1, $item[snow crab]);
-		eat(1, $item[snow crab]);
-	} 
+	if ($item[This Charming Flan].available_amount() > 0) {
+		eat(1, $item[This Charming Flan]);
+	}
 }
 
 void eatHotFood() {
@@ -720,7 +717,6 @@ void itemTest() {
 		//eat food
 		useIfHave(1, $item[milk of magnesium]);
 		eat(1, $item[weird gazelle steak]);
-		eat(1, $item[This Charming Flan]);
 		if ($item[snow crab].available_amount() > 0) {
 			eat(1, $item[snow crab]);
 		} else if ($item[Knob pasty].available_amount() > 0) {
