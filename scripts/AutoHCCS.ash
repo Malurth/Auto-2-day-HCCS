@@ -547,7 +547,7 @@ void getG9Serum() { //like 0-7 turns prolly
 }
 
 boolean hasScalingZone() {
-	if (get_property_boolean("hotAirportAlways") || get_property_boolean("spookyAirportAlways") || get_property_boolean("sleazyAirportAlways") || get_property_boolean("sleazyAirportAlways") || $item[GameInformPowerDailyPro walkthru].available_amount() > 0 || $item[GameInformPowerDailyPro magazine].available_amount() > 0) {
+	if (get_property_boolean("hotAirportAlways") || get_property_boolean("spookyAirportAlways") || get_property_boolean("sleazyAirportAlways") || get_property_boolean("stenchAirportAlways") || $item[GameInformPowerDailyPro walkthru].available_amount() > 0 || $item[GameInformPowerDailyPro magazine].available_amount() > 0) {
 		return true;
 	} else {
 		return false;
