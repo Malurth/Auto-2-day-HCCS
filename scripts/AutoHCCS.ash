@@ -25,6 +25,7 @@ boolean actuallyrun = true;
 ////actually check how many free crafts are remaining instead of the moronic BS I currently do
 ////switch off fist turkey after a drop
 ////maybe modify nightcap code so it doesn't look like ass
+////get all the free barrel full of barrel stuff if you have barrel shrine...somehow
 
 void loadSave() {
 	file_to_map("AutoHCCSvars.txt", statemap);
@@ -1227,6 +1228,18 @@ void getPotionIngredients() {
 			} else {
 				abort("Failed to get cherry from fruit baskets before running out of clovers.");
 			}
+		}
+		if ($item[lemon].available_amount() == 0) {
+			buy(1, $item[lemon]);
+		}
+		if ($item[olive].available_amount() == 0) {
+			buy(1, $item[olive]);
+		}
+		if ($item[grapefruit].available_amount() == 0) {
+			buy(1, $item[grapefruit]);
+		}
+		if ($item[tomato].available_amount() < 2) {
+			buy(2-$item[tomato].available_amount(), $item[tomato]);
 		}
 		equip(prevhat);
 		if (prevpants != $item[none]) {
