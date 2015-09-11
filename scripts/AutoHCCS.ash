@@ -230,7 +230,7 @@ void calderaMood() {
 		cli_execute("trigger lose_effect, Springy Fusilli, cast 1 Springy Fusilli");
 	} 
 	if (have_skill($skill[The Power Ballad of the Arrowsmith])) {
-		cli_execute("trigger lose_effect, The Power Ballad of the Arrowsmith, cast 1 The Power Ballad of the Arrowsmith");
+		cli_execute("trigger lose_effect, Power Ballad of the Arrowsmith, cast 1 The Power Ballad of the Arrowsmith");
 	} 
 	if (have_skill($skill[Suspicious Gaze])) {
 		cli_execute("trigger lose_effect, Suspicious Gaze, cast 1 Suspicious Gaze");
@@ -245,7 +245,7 @@ void calderaMood() {
 		cli_execute("trigger lose_effect, Patience of the Tortoise, cast 1 Patience of the Tortoise");
 	} 
 	if (have_skill($skill[Moxie of the Mariachi])) {
-		cli_execute("trigger lose_effect, Moxie of the Mariachi, cast 1 Moxie of the Mariachi");
+		cli_execute("trigger lose_effect, Mariachi Mood, cast 1 Moxie of the Mariachi");
 	}
 	cli_execute("mood execute");
 }
@@ -1087,6 +1087,10 @@ void getMilk() {
 	chateauCast($skill[Cletus's Canticle of Celerity]);
 	chateauCast($skill[Sauce Contemplation]);
 	restore_hp(my_maxhp());
+	familiar prevfam = my_familiar();
+	if(have_familiar($familiar[Crimbo Shrub])) {
+		use_familiar($familiar[Crimbo Shrub]);
+	}
 	if (get_property("chateauMonster") == "dairy goat") {
 		visit_url("place.php?whichplace=chateau&action=chateau_painting");
 		adventure(1, $location[Noob Cave], "combat"); //I'm told this works. 
@@ -1099,6 +1103,7 @@ void getMilk() {
 	} else {
 		create(1, $item[milk of magnesium]);
 	}
+	use_familiar(prevfam);
 }
 
 void getPirateDNA() {
@@ -1219,7 +1224,7 @@ void getPotionIngredients() {
 		while ($item[cherry].available_amount() == 0) {
 			if ($item[disassembled clover].available_amount() > 0) {
 				use(1, $item[disassembled clover]);
-				adventure(1, $location[Hippy Camp], "combat");
+				visit_url("adventure.php?snarfblat=26&confirm=on");
 				use(1, $item[fruit basket]);
 			} else {
 				abort("Failed to get cherry from fruit baskets before running out of clovers.");
@@ -1416,6 +1421,7 @@ void day1setup() {
 		return;
 	}
 	setFamiliar();
+	decorateShrub();
 	visit_url("tutorial.php?action=toot"); //get letter
 	if ($item[Letter from King Ralph XI].available_amount() > 0) {
 		use(1, $item[Letter from King Ralph XI]); //get sack of jewels
