@@ -826,7 +826,7 @@ void spellTest() { //buffing for this test is actually handled at the end of day
 	if(statemap["questStage"] >= 19) {
 		return;
 	}
-	if ($item[scrumptious reagent].available_amount() > 0)  {
+	if ($item[scrumptious reagent].available_amount() > 0 && $item[cordial of concentration].available_amount() == 0)  {
 		buy(1, $item[soda water]);
 		create(1, $item[cordial of concentration]);
 		use(1, $item[cordial of concentration]);
