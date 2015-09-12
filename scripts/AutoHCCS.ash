@@ -1420,6 +1420,7 @@ void day1setup() {
 	if(statemap["questStage"] >= 1) {
 		return;
 	}
+	visit_url("council.php");
 	setFamiliar();
 	decorateShrub();
 	visit_url("tutorial.php?action=toot"); //get letter
