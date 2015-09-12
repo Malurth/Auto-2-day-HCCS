@@ -1468,7 +1468,7 @@ void day1setup() {
 	getTurtleTotem();
 	if ($item[detuned radio].available_amount() == 0) {
 		buy(1, $item[detuned radio]);
-		change_mcd(11);
+		change_mcd(10);
 	}
 	if($item[GameInformPowerDailyPro magazine].available_amount() > 0) {
 		use(1, $item[GameInformPowerDailyPro magazine]);
