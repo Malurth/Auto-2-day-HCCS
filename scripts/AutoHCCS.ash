@@ -314,8 +314,8 @@ string combatYR() {
 	}
 }
 
-string combat(int round, string opp, string text) { //always uses your own custom combat script after first doing whatever you're supposed to
-	if ((opp == $monster[lavatory].to_string() || opp == $monster[garbage tourist].to_string() || opp == $monster[lava lamprey].to_string() || opp.contains_text("pirate")) && $item[DNA extraction syringe].available_amount() > 0) { //DNA
+string combat(int round, string opp, string text) { //always uses this script's custom combat after first doing whatever you're supposed to
+	if ((opp == $monster[lavatory].to_string() || opp == $monster[garbage tourist].to_string()) && $item[DNA extraction syringe].available_amount() > 0) { //DNA
 		if ($item[Gene Tonic: Elemental].available_amount() == 0) {
 			if(round == 0) {
 				return "item DNA extraction syringe";
@@ -324,6 +324,22 @@ string combat(int round, string opp, string text) { //always uses your own custo
 			}
 		} else {
 			return customCombat(round);
+		}
+	} else if (opp == $monster[lava lamprey].to_string() && $item[DNA extraction syringe].available_amount() > 0) { //DNA
+		if (have_effect($effect[Human-Fish Hybrid]) == 0) {
+			if(round == 0) {
+				return "item DNA extraction syringe";
+			} else {
+				return customCombat(round - 1);
+			}
+		} else {
+			return customCombat(round);
+		}
+	} else if (opp.contains_text("pirate") && $item[DNA extraction syringe].available_amount() > 0) { //DNA
+		if(round == 0) {
+			return "item DNA extraction syringe";
+		} else {
+			return customCombat(round - 1);
 		}
 	} else if (opp == $monster[dairy goat].to_string()) { //beast DNA and milk of magnesium
 		if(round == 0 && $item[DNA extraction syringe].available_amount() > 0 && $item[Gene Tonic: Beast].available_amount() == 0) {
@@ -453,6 +469,7 @@ void summonDailyStuff() {
 	chateauCast($skill[Spaghetti Breakfast]);
 	visit_url("campground.php?action=garden");
 	visit_url("campground.php?action=workshed");
+	visit_url("place.php?whichplace=chateau&action=chateau_desk2");
 }
 
 int advToSemirare() {
@@ -852,6 +869,7 @@ void coilTest() {
 
 void muscleTest() {
 	if(statemap["questStage"] == 28) {
+		visit_url("campground.php?action=telescopehigh");
 		cli_execute("cheat strength");
 		if (have_effect($effect[Power Ballad of the Arrowsmith]) == 0) {
 			chateauCast($skill[The Power Ballad of the Arrowsmith]);
