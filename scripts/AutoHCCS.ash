@@ -26,6 +26,7 @@ boolean actuallyrun = true;
 ////switch off fist turkey after a drop
 ////maybe modify nightcap code so it doesn't look like ass
 ////get all the free barrel full of barrel stuff if you have barrel shrine...somehow
+////taffy, spleen drops
 
 void loadSave() {
 	file_to_map("AutoHCCSvars.txt", statemap);
@@ -554,6 +555,12 @@ void getG9Serum() { //like 0-7 turns prolly
 				restore_mp(mp_cost($skill[Transcendent Olfaction]));
 				print("Had to restort to meat-MP instead of chateau rest", "red");
 			}
+		}
+		adv1($location[The Secret Government Laboratory], -1, "combat");
+		if ($item[Personal Ventilation Unit].available_amount() > 0) {
+			equip($item[Personal Ventilation Unit]);
+		} else {
+			abort("Failed to get Personal Ventilation Unit somehow");
 		}
 		while($item[experimental serum G-9].available_amount() < 2) {
 			if (!getSRifCan()) {
@@ -1229,7 +1236,7 @@ void getPotionIngredients() {
 		return;
 	}
 	if (islandSkipped()) {
-		while ($item[cherry].available_amount() == 0) {
+		while ($item[cherry].available_amount() == 0 || $item[grapefruit].available_amount() == 0 || $item[lemon].available_amount() == 0) {
 			YRAdv($location[The Skeleton Store]);
 		}
 	} else {
