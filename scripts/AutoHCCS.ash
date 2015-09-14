@@ -1491,7 +1491,8 @@ void day1setup() {
 		change_mcd(10);
 	}
 	if($item[GameInformPowerDailyPro magazine].available_amount() > 0) {
-		use(1, $item[GameInformPowerDailyPro magazine]);
+		visit_url("inv_use.php?pwd&whichitem=6174&confirm=Yep.");
+		cli_execute("inv refresh");
 		visit_url("place.php?whichplace=faqdungeon");
 		visit_url("adventure.php?snarfblat=319");
 		if ($item[dungeoneering kit].available_amount() > 0) {
