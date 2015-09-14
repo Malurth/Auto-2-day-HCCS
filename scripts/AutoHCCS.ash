@@ -1028,7 +1028,9 @@ void powerlevel() {
 				while (free_rests_left() > 1) {
 					free_rest();
 				}
-				if (have_familiar($familiar[Hovering Sombrero])) {
+				if (have_familiar($familiar[Galloping Grill])) {
+				  use_familiar($familiar[Galloping Grill]);
+				} else if (have_familiar($familiar[Hovering Sombrero])) {
 					use_familiar($familiar[Hovering Sombrero]);
 				} else if (have_familiar($familiar[Golden Monkey])) {
 					use_familiar($familiar[Golden Monkey]);
@@ -1036,8 +1038,6 @@ void powerlevel() {
 					use_familiar($familiar[Grim Brother]);
 				} else if (have_familiar($familiar[Unconscious Collective])) {
 					use_familiar($familiar[Unconscious Collective]);
-				} else if (have_familiar($familiar[Galloping Grill])) {
-					use_familiar($familiar[Galloping Grill]);
 				} else if (have_familiar($familiar[Smiling Rat])) {
 					use_familiar($familiar[Smiling Rat]);
 				}
