@@ -1,3 +1,4 @@
+since r16319;
 script "Automatic 2-day Hardcore Community Service";
 notify aabattery;
 //courtesy of yojimboS_LAW's 2-day HC guide
