@@ -1099,6 +1099,11 @@ void powerlevel() {
 					if (my_adventures() == 0) {
 						abort("Ran out of adventures.");
 					}
+					if (farmzone == $location[Video Game Level 1] && turnsfarmed == 8) { //refresh video game level 1 zone; should have 2 magazines
+						visit_url("inv_use.php?pwd&whichitem=6174&confirm=Yep.");
+						cli_execute("inv refresh");
+						visit_url("place.php?whichplace=faqdungeon");
+					}
 					combatAdv(farmzone, true);
 					if (have_effect($effect[beaten up]) > 0) {
 						abort("Getting beaten up when trying to powerlevel. Consider changing custom combat script?");
