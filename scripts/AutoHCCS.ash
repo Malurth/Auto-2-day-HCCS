@@ -26,7 +26,6 @@ boolean actuallyrun = true;
 ////switch off fist turkey after a drop
 ////maybe modify nightcap code so it doesn't look like ass
 ////get all the free barrel full of barrel stuff if you have barrel shrine...somehow
-////taffy, spleen drops
 
 void loadSave() {
 	file_to_map("AutoHCCSvars.txt", statemap);
@@ -285,6 +284,16 @@ boolean doTest(int which) {
 	}
 }
 
+void chewSpleen() {
+	if ($item[grim fairy tale].available_amount() > 0) {
+		chew(1, $item[grim fairy tale]);
+	} else if ($item[powdered gold].available_amount() > 0) {
+		chew(1, $item[powdered gold]);
+	} else if ($item[Unconscious Collective Dream Jar].available_amount() > 0) {
+		chew(1, $item[Unconscious Collective Dream Jar]);
+	}
+}
+
 boolean YRsourceAvailable() {
 	if(have_familiar($familiar[Crimbo Shrub]) || $item[Golden Light].available_amount() > 0) {
 		return true;
@@ -471,6 +480,9 @@ void summonDailyStuff() {
 	visit_url("campground.php?action=garden");
 	visit_url("campground.php?action=workshed");
 	visit_url("place.php?whichplace=chateau&action=chateau_desk2");
+	while (mp_cost($skill[Summon Taffy]) < 30) {
+		chateauCast($skill[Summon Taffy]);
+	}
 }
 
 int advToSemirare() {
@@ -701,7 +713,11 @@ void weaponTest() {
 		chateauCast($skill[Tenacity of the Snapper]);
 		chateauCast($skill[Song of the North]);
 		useIfHave(1, $item[Gene Tonic: Beast]);
-		while (my_level() < 8 && free_rest()) {} //expends free rests until level 8 or running out
+		while (my_level() < 8 && free_rest()) { //expends free rests until level 8 or running out
+			if (my_mp() > (mp_cost($skill[Summon Taffy]) + 50)) {
+				cast($skill[Summon Taffy]);
+			}
+		}
 		if (my_level() < 8) {
 			print("Failed to reach level 8.", "red");
 		} else {
@@ -829,6 +845,9 @@ void hpTest() {
 		chateauCast($skill[Patience of the Tortoise]);
 		chateauCast($skill[Moxie of the Mariachi]);
 		chateauCast($skill[Rage of the Reindeer]);
+		if (have_familiar($familiar[Grim Brother])) {
+			cli_execute("grim hpmp");
+		}
 		saveProgress(27);
 	}
 	
@@ -889,6 +908,7 @@ void muscleTest() {
 		useIfHave(1, $item[jar of &quot;Creole Lady&quot; marrrmalade]);
 		useIfHave(1, $item[dollop of barbecue sauce]);
 		useIfHave(1, $item[Ben-Gal&trade; Balm]);
+		useIfHave($item[pulled orange taffy].available_amount(), $item[pulled orange taffy]);
 		if (have_effect($effect[Phorcefullness]) == 0) {
 			useIfHave(1, $item[philter of phorce]);
 		}
@@ -912,6 +932,7 @@ void mystTest() {
 		chateauCast($skill[Sauce Contemplation]);
 		chateauCast($skill[Manicotti Meditation]);
 		useIfHave(1, $item[ointment of the occult]);
+		useIfHave($item[pulled violet taffy].available_amount(), $item[pulled violet taffy]);
 		buy(1, $item[glittery mascara]);
 		use(1, $item[glittery mascara]);
 		allStatBuffs();
@@ -936,6 +957,7 @@ void moxieTest() {
 		useIfHave(1, $item[dollop of barbecue sauce]);
 		useIfHave(1, $item[pressurized potion of pulchritude]);
 		useIfHave(1, $item[serum of sarcasm]);
+		useIfHave($item[pulled red taffy].available_amount(), $item[pulled red taffy]);
 		buy(1, $item[hair spray]);
 		use(1, $item[hair spray]);
 		if (have_effect($effect[Expert Oiliness]) == 0) {
@@ -1033,6 +1055,9 @@ void powerlevel() {
 				chateauCast($skill[Stevedave's Shanty of Superiority]);
 				chateauCast($skill[Stevedave's Shanty of Superiority]);
 				while (free_rests_left() > 1) {
+					if (my_mp() > (mp_cost($skill[Summon Taffy]) + 100)) {
+						cast($skill[Summon Taffy]);
+					}
 					free_rest();
 				}
 				if (have_familiar($familiar[Galloping Grill])) {
@@ -1082,10 +1107,11 @@ void powerlevel() {
 					turnsfarmed += 1;
 				}
 				cli_execute("mood clear");
-				pulverize($item[A Light That Never Goes Out]);
 				saveProgress(26);
 			}
 		}
+		pulverize($item[A Light That Never Goes Out]);
+		chewSpleen();
 	}
 }
 
@@ -1435,6 +1461,12 @@ void endDay1() { //final actions of day 1; spell test buffing goes here
 		visit_url("da.php?barrelshrine=1");
 		visit_url("choice.php?whichchoice=1100&option=4&pwd="+my_hash());
 	}
+	if (have_familiar($familiar[Grim Brother])) {
+		cli_execute("grim damage");
+	}
+	chewSpleen();
+	chewSpleen();
+	chewSpleen();
 	while (free_rest()) {} //expends all free rests
 	maximize("adv", false);
 	chateaumantegna_buyStuff($item[Artificial Skylight]);
