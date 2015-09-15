@@ -1,5 +1,6 @@
 script "Automatic 2-day Hardcore Community Service";
 notify aabattery;
+since r16319;
 //courtesy of yojimboS_LAW's 2-day HC guide
 //shoutouts to Cheesecookie, Ezandora, and Cannonfire40 for contributing a bit of code/advice
 
@@ -25,7 +26,6 @@ boolean lockFamiliar = false;
 ////allow running before ascending to check prereqs then
 ////actually check how many free crafts are remaining instead of the moronic BS I currently do
 ////switch off fist turkey after a drop
-////maybe modify nightcap code so it doesn't look like ass
 ////get all the free barrel full of barrel stuff if you have barrel shrine...somehow
 
 void loadSave() {
@@ -293,6 +293,16 @@ boolean doTest(int which) {
 	}
 }
 
+void chewSpleen() {
+	if ($item[grim fairy tale].available_amount() > 0) {
+		chew(1, $item[grim fairy tale]);
+	} else if ($item[powdered gold].available_amount() > 0) {
+		chew(1, $item[powdered gold]);
+	} else if ($item[Unconscious Collective Dream Jar].available_amount() > 0) {
+		chew(1, $item[Unconscious Collective Dream Jar]);
+	}
+}
+
 boolean YRsourceAvailable() {
 	if(have_familiar($familiar[Crimbo Shrub]) || $item[Golden Light].available_amount() > 0) {
 		return true;
@@ -482,6 +492,11 @@ void summonDailyStuff() {
 	visit_url("campground.php?action=garden");
 	visit_url("campground.php?action=workshed");
 	visit_url("place.php?whichplace=chateau&action=chateau_desk2");
+	if (have_skill($skill[Summon Taffy])) {
+		while (mp_cost($skill[Summon Taffy]) < 30) {
+			chateauCast($skill[Summon Taffy]);
+}
+	}
 }
 
 int advToSemirare() {
@@ -568,6 +583,12 @@ void getG9Serum() { //like 0-7 turns prolly
 				restore_mp(mp_cost($skill[Transcendent Olfaction]));
 				print("Had to restort to meat-MP instead of chateau rest", "red");
 			}
+		}
+		adv1($location[The Secret Government Laboratory], -1, "combat");
+		if ($item[Personal Ventilation Unit].available_amount() > 0) {
+			equip($item[Personal Ventilation Unit]);
+		} else {
+			abort("Failed to get Personal Ventilation Unit somehow");
 		}
 		while($item[experimental serum G-9].available_amount() < 2) {
 			if (!getSRifCan()) {
@@ -708,7 +729,11 @@ void weaponTest() {
 		chateauCast($skill[Tenacity of the Snapper]);
 		chateauCast($skill[Song of the North]);
 		useIfHave(1, $item[Gene Tonic: Beast]);
-		while (my_level() < 8 && free_rest()) {} //expends free rests until level 8 or running out
+		while (my_level() < 8 && free_rest()) { //expends free rests until level 8 or running out
+			if (have_skill($skill[Summon Taffy]) && my_mp() > (mp_cost($skill[Summon Taffy]) + 50)) {
+				cast($skill[Summon Taffy]);
+			}
+		}
 		if (my_level() < 8) {
 			print("Failed to reach level 8.", "red");
 		} else {
@@ -836,6 +861,9 @@ void hpTest() {
 		chateauCast($skill[Patience of the Tortoise]);
 		chateauCast($skill[Moxie of the Mariachi]);
 		chateauCast($skill[Rage of the Reindeer]);
+		if (have_familiar($familiar[Grim Brother])) {
+			cli_execute("grim hpmp");
+		}
 		saveProgress(27);
 	}
 	
@@ -896,6 +924,7 @@ void muscleTest() {
 		useIfHave(1, $item[jar of &quot;Creole Lady&quot; marrrmalade]);
 		useIfHave(1, $item[dollop of barbecue sauce]);
 		useIfHave(1, $item[Ben-Gal&trade; Balm]);
+		useIfHave($item[pulled orange taffy].available_amount(), $item[pulled orange taffy]);
 		if (have_effect($effect[Phorcefullness]) == 0) {
 			useIfHave(1, $item[philter of phorce]);
 		}
@@ -919,6 +948,7 @@ void mystTest() {
 		chateauCast($skill[Sauce Contemplation]);
 		chateauCast($skill[Manicotti Meditation]);
 		useIfHave(1, $item[ointment of the occult]);
+		useIfHave($item[pulled violet taffy].available_amount(), $item[pulled violet taffy]);
 		buy(1, $item[glittery mascara]);
 		use(1, $item[glittery mascara]);
 		allStatBuffs();
@@ -943,6 +973,7 @@ void moxieTest() {
 		useIfHave(1, $item[dollop of barbecue sauce]);
 		useIfHave(1, $item[pressurized potion of pulchritude]);
 		useIfHave(1, $item[serum of sarcasm]);
+		useIfHave($item[pulled red taffy].available_amount(), $item[pulled red taffy]);
 		buy(1, $item[hair spray]);
 		use(1, $item[hair spray]);
 		if (have_effect($effect[Expert Oiliness]) == 0) {
@@ -1040,6 +1071,9 @@ void powerlevel() {
 				chateauCast($skill[Stevedave's Shanty of Superiority]);
 				chateauCast($skill[Stevedave's Shanty of Superiority]);
 				while (free_rests_left() > 1) {
+					if (have_skill($skill[Summon Taffy]) && my_mp() > (mp_cost($skill[Summon Taffy]) + 100)) {
+						cast($skill[Summon Taffy]);
+					}
 					free_rest();
 				}
 				if (have_familiar($familiar[Galloping Grill])) {
@@ -1082,6 +1116,11 @@ void powerlevel() {
 					if (my_adventures() == 0) {
 						abort("Ran out of adventures.");
 					}
+					if (farmzone == $location[Video Game Level 1] && turnsfarmed == 8) { //refresh video game level 1 zone; should have 2 magazines
+						visit_url("inv_use.php?pwd&whichitem=6174&confirm=Yep.");
+						cli_execute("inv refresh");
+						visit_url("place.php?whichplace=faqdungeon");
+					}
 					combatAdv(farmzone, true);
 					if (have_effect($effect[beaten up]) > 0) {
 						abort("Getting beaten up when trying to powerlevel. Consider changing custom combat script?");
@@ -1090,11 +1129,12 @@ void powerlevel() {
 					turnsfarmed += 1;
 				}
 				cli_execute("mood clear");
-				pulverize($item[A Light That Never Goes Out]);
 				lockFamiliar = false;
 				saveProgress(26);
 			}
 		}
+		pulverize($item[A Light That Never Goes Out]);
+		chewSpleen();
 	}
 }
 
@@ -1245,7 +1285,7 @@ void getPotionIngredients() {
 		return;
 	}
 	if (islandSkipped()) {
-		while ($item[cherry].available_amount() == 0) {
+		while ($item[cherry].available_amount() == 0 || $item[grapefruit].available_amount() == 0 || $item[lemon].available_amount() == 0) {
 			YRAdv($location[The Skeleton Store]);
 		}
 	} else {
@@ -1364,67 +1404,31 @@ void drinkBestSize1() { //I prolly should have had this take a "how many" argume
 	}
 }
 
-void nightcap() {
-	if (my_inebriety() < 14) { //ideally I would use some algorithm to solve for the knapsack problem but meh whatever this'll do
-		//size 1 booze always preferred over size 2 booze; a level 8 Cold One is slightly worse than Whinskey, but it either doesn't compete with it or is accompanied by another better 1-size booze
+boolean fill2liver() { //returns false if it can't fill 2 liver
 		int size1s = $item[astral pilsner].available_amount() + $item[Ambitious Turkey].available_amount() + $item[Agitated Turkey].available_amount() + $item[thermos full of Knob coffee].available_amount() + $item[Cold One].available_amount();
-		if (my_inebriety() == 13) {
+	if (size1s > 1) { //size 1 booze always preferred over size 2 booze; a level 8 Cold One is slightly worse than Whinskey, but it either doesn't compete with it or is accompanied by another better 1-size booze
 			drinkBestSize1();
-		} else if (my_inebriety() == 12) {
-			if (size1s > 1) { 
 				drinkBestSize1();
-				drinkBestSize1();
+		return true;
 			} else if ($item[Dinsey Whinskey].available_amount() > 0) {
 				drink(1, $item[Dinsey Whinskey]);
+		return true;
 			} else if (get_property_int("_speakeasyDrinksDrunk") < 3) {
 				visit_url("clan_viplounge.php?preaction=speakeasydrink&drink=6&pwd="+my_hash()); //sockadollager; saves 2 turns on spell dmg test but is still the worst for daycount overall
+		return true;
 			} else { //drink what you can
 				drinkBestSize1();
+		return false;
 			}
-		} else if (my_inebriety() == 11) {
-			if (size1s > 2) {
-				drinkBestSize1();
-				drinkBestSize1();
-				drinkBestSize1();
-			} else if ($item[Dinsey Whinskey].available_amount() > 0) {
-				drink(1, $item[Dinsey Whinskey]);
-				drinkBestSize1();
-			} else if (get_property_int("_speakeasyDrinksDrunk") < 3) {
-				visit_url("clan_viplounge.php?preaction=speakeasydrink&drink=6&pwd="+my_hash()); //sockadollager
-				drinkBestSize1();
-			} else { //drink what you can
-				drinkBestSize1();
+			}
+
+void nightcap() {
+	if (my_inebriety() < 14) { //ideally I would use some algorithm to solve for the knapsack problem but meh whatever this'll do
+		while (14 - my_inebriety() > 1 && fill2liver()) {} //fills 2 liver until you have 1 or 0 left to fill or it fails to fill it
+		if (my_inebriety() == 13) {
 				drinkBestSize1();
 			}
-		} else if (my_inebriety() == 10) {
-			if (size1s > 3) {
-				drinkBestSize1();
-				drinkBestSize1();
-				drinkBestSize1();
-				drinkBestSize1();
-			} else if ($item[Dinsey Whinskey].available_amount() > 0 && size1s > 1) {
-				drink(1, $item[Dinsey Whinskey]);
-				drinkBestSize1();
-				drinkBestSize1();
-			} else if (get_property_int("_speakeasyDrinksDrunk") < 3 && size1s > 1) {
-				visit_url("clan_viplounge.php?preaction=speakeasydrink&drink=6&pwd="+my_hash()); //sockadollager
-				drinkBestSize1();
-				drinkBestSize1();
-			} else if ($item[Dinsey Whinskey].available_amount() > 0) { //drink what you can
-				drink(1, $item[Dinsey Whinskey]);
-				drinkBestSize1();
-			} else if (get_property_int("_speakeasyDrinksDrunk") < 3) { //drink what you can
-				visit_url("clan_viplounge.php?preaction=speakeasydrink&drink=6&pwd="+my_hash()); //sockadollager
-				drinkBestSize1();
-			} else { //drink what you can
-				drinkBestSize1();
-				drinkBestSize1();
-				drinkBestSize1();
-			}
-		} else { ////okay hopefully that's enough, lol
-			abort("I didn't bother coding what to drink at the end of the day when left with under 10 inebriety. Do it yourself! It's all that's left to do today anyway.");
 		} 
-	}
 	drink(1, $item[emergency margarita]);
 }
 
@@ -1444,6 +1448,12 @@ void endDay1() { //final actions of day 1; spell test buffing goes here
 		visit_url("da.php?barrelshrine=1");
 		visit_url("choice.php?whichchoice=1100&option=4&pwd="+my_hash());
 	}
+	if (have_familiar($familiar[Grim Brother])) {
+		cli_execute("grim damage");
+	}
+	chewSpleen();
+	chewSpleen();
+	chewSpleen();
 	while (free_rest()) {} //expends all free rests
 	maximize("adv", false);
 	chateaumantegna_buyStuff($item[Artificial Skylight]);
