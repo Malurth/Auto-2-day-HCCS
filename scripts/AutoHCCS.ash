@@ -25,7 +25,6 @@ boolean actuallyrun = true;
 ////allow running before ascending to check prereqs then
 ////actually check how many free crafts are remaining instead of the moronic BS I currently do
 ////switch off fist turkey after a drop
-////maybe modify nightcap code so it doesn't look like ass
 ////get all the free barrel full of barrel stuff if you have barrel shrine...somehow
 
 void loadSave() {
@@ -481,8 +480,10 @@ void summonDailyStuff() {
 	visit_url("campground.php?action=garden");
 	visit_url("campground.php?action=workshed");
 	visit_url("place.php?whichplace=chateau&action=chateau_desk2");
-	while (mp_cost($skill[Summon Taffy]) < 30) {
-		chateauCast($skill[Summon Taffy]);
+	if (have_skill($skill[Summon Taffy])) {
+		while (mp_cost($skill[Summon Taffy]) < 30) {
+			chateauCast($skill[Summon Taffy]);
+		}
 	}
 }
 
@@ -715,7 +716,7 @@ void weaponTest() {
 		chateauCast($skill[Song of the North]);
 		useIfHave(1, $item[Gene Tonic: Beast]);
 		while (my_level() < 8 && free_rest()) { //expends free rests until level 8 or running out
-			if (my_mp() > (mp_cost($skill[Summon Taffy]) + 50)) {
+			if (have_skill($skill[Summon Taffy]) && my_mp() > (mp_cost($skill[Summon Taffy]) + 50)) {
 				cast($skill[Summon Taffy]);
 			}
 		}
@@ -1056,7 +1057,7 @@ void powerlevel() {
 				chateauCast($skill[Stevedave's Shanty of Superiority]);
 				chateauCast($skill[Stevedave's Shanty of Superiority]);
 				while (free_rests_left() > 1) {
-					if (my_mp() > (mp_cost($skill[Summon Taffy]) + 100)) {
+					if (have_skill($skill[Summon Taffy]) && my_mp() > (mp_cost($skill[Summon Taffy]) + 100)) {
 						cast($skill[Summon Taffy]);
 					}
 					free_rest();
@@ -1387,66 +1388,30 @@ void drinkBestSize1() { //I prolly should have had this take a "how many" argume
 	}
 }
 
+boolean fill2liver() { //returns false if it can't fill 2 liver
+	int size1s = $item[astral pilsner].available_amount() + $item[Ambitious Turkey].available_amount() + $item[Agitated Turkey].available_amount() + $item[thermos full of Knob coffee].available_amount() + $item[Cold One].available_amount();
+	if (size1s > 1) { //size 1 booze always preferred over size 2 booze; a level 8 Cold One is slightly worse than Whinskey, but it either doesn't compete with it or is accompanied by another better 1-size booze
+		drinkBestSize1();
+		drinkBestSize1();
+		return true;
+	} else if ($item[Dinsey Whinskey].available_amount() > 0) {
+		drink(1, $item[Dinsey Whinskey]);
+		return true;
+	} else if (get_property_int("_speakeasyDrinksDrunk") < 3) {
+		visit_url("clan_viplounge.php?preaction=speakeasydrink&drink=6&pwd="+my_hash()); //sockadollager; saves 2 turns on spell dmg test but is still the worst for daycount overall
+		return true;
+	} else { //drink what you can
+		drinkBestSize1();
+		return false;
+	}
+}
+
 void nightcap() {
 	if (my_inebriety() < 14) { //ideally I would use some algorithm to solve for the knapsack problem but meh whatever this'll do
-		//size 1 booze always preferred over size 2 booze; a level 8 Cold One is slightly worse than Whinskey, but it either doesn't compete with it or is accompanied by another better 1-size booze
-		int size1s = $item[astral pilsner].available_amount() + $item[Ambitious Turkey].available_amount() + $item[Agitated Turkey].available_amount() + $item[thermos full of Knob coffee].available_amount() + $item[Cold One].available_amount();
+		while (14 - my_inebriety() > 1 && fill2liver()) {} //fills 2 liver until you have 1 or 0 left to fill or it fails to fill it
 		if (my_inebriety() == 13) {
 			drinkBestSize1();
-		} else if (my_inebriety() == 12) {
-			if (size1s > 1) { 
-				drinkBestSize1();
-				drinkBestSize1();
-			} else if ($item[Dinsey Whinskey].available_amount() > 0) {
-				drink(1, $item[Dinsey Whinskey]);
-			} else if (get_property_int("_speakeasyDrinksDrunk") < 3) {
-				visit_url("clan_viplounge.php?preaction=speakeasydrink&drink=6&pwd="+my_hash()); //sockadollager; saves 2 turns on spell dmg test but is still the worst for daycount overall
-			} else { //drink what you can
-				drinkBestSize1();
-			}
-		} else if (my_inebriety() == 11) {
-			if (size1s > 2) {
-				drinkBestSize1();
-				drinkBestSize1();
-				drinkBestSize1();
-			} else if ($item[Dinsey Whinskey].available_amount() > 0) {
-				drink(1, $item[Dinsey Whinskey]);
-				drinkBestSize1();
-			} else if (get_property_int("_speakeasyDrinksDrunk") < 3) {
-				visit_url("clan_viplounge.php?preaction=speakeasydrink&drink=6&pwd="+my_hash()); //sockadollager
-				drinkBestSize1();
-			} else { //drink what you can
-				drinkBestSize1();
-				drinkBestSize1();
-			}
-		} else if (my_inebriety() == 10) {
-			if (size1s > 3) {
-				drinkBestSize1();
-				drinkBestSize1();
-				drinkBestSize1();
-				drinkBestSize1();
-			} else if ($item[Dinsey Whinskey].available_amount() > 0 && size1s > 1) {
-				drink(1, $item[Dinsey Whinskey]);
-				drinkBestSize1();
-				drinkBestSize1();
-			} else if (get_property_int("_speakeasyDrinksDrunk") < 3 && size1s > 1) {
-				visit_url("clan_viplounge.php?preaction=speakeasydrink&drink=6&pwd="+my_hash()); //sockadollager
-				drinkBestSize1();
-				drinkBestSize1();
-			} else if ($item[Dinsey Whinskey].available_amount() > 0) { //drink what you can
-				drink(1, $item[Dinsey Whinskey]);
-				drinkBestSize1();
-			} else if (get_property_int("_speakeasyDrinksDrunk") < 3) { //drink what you can
-				visit_url("clan_viplounge.php?preaction=speakeasydrink&drink=6&pwd="+my_hash()); //sockadollager
-				drinkBestSize1();
-			} else { //drink what you can
-				drinkBestSize1();
-				drinkBestSize1();
-				drinkBestSize1();
-			}
-		} else { ////okay hopefully that's enough, lol
-			abort("I didn't bother coding what to drink at the end of the day when left with under 10 inebriety. Do it yourself! It's all that's left to do today anyway.");
-		} 
+		}
 	}
 	drink(1, $item[emergency margarita]);
 }
