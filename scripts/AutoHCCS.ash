@@ -25,7 +25,6 @@ boolean lockFamiliar = false;
 ////add puck-man logic maybe (unlocking the woods and stuff)
 ////allow running before ascending to check prereqs then
 ////actually check how many free crafts are remaining instead of the moronic BS I currently do
-////switch off fist turkey after a drop
 ////get all the free barrel full of barrel stuff if you have barrel shrine...somehow
 
 void loadSave() {
@@ -95,10 +94,10 @@ void setFamiliar() { //idk about this but something's better than nothing...I'd 
 		int desiredSpleenDrops = 3;
 		if (my_daycount() == 2)
 			desiredSpleenDrops = 1;
-		if (spleener != $familiar[none] && spleener.drops_today < desiredSpleenDrops) {
-			use_familiar(spleener);
-		} else if (have_familiar($familiar[Fist Turkey]) && $familiar[Fist Turkey].drops_today < 5) {
+		if (my_daycount() == 1 && have_familiar($familiar[Fist Turkey]) && $familiar[Fist Turkey].drops_today < 1) {
 			use_familiar($familiar[Fist Turkey]);
+		} else if (spleener != $familiar[none] && spleener.drops_today < desiredSpleenDrops) {
+			use_familiar(spleener);
 		} else if (have_familiar($familiar[Galloping Grill])) {
 			use_familiar($familiar[Galloping Grill]);
 		} else if (have_familiar($familiar[Crimbo Shrub])) {
