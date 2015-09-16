@@ -20,6 +20,7 @@ int COILTEST = 11;
 int [string] statemap;
 
 boolean actuallyrun = true;
+boolean lockFamiliar = false;
 
 ////add puck-man logic maybe (unlocking the woods and stuff)
 ////allow running before ascending to check prereqs then
@@ -80,16 +81,24 @@ void decorateShrub() {
 	use_familiar(current);
 }
 
+familiar getSpleenFamiliar() {
+	foreach spleener in $familiars[Golden Monkey, Grim Brother, Unconscious Collective] {
+		if (have_familiar(spleener))
+			return spleener;
+	}
+	return $familiar[none];
+}
+
 void setFamiliar() { //idk about this but something's better than nothing...I'd throw puck-man here but then I'd have to unlock the woods so meh
-	if (my_familiar() == $familiar[none]) {
-		if (have_familiar($familiar[Fist Turkey])) {
+	if (!lockFamiliar) {
+		familiar spleener = getSpleenFamiliar();
+		int desiredSpleenDrops = 3;
+		if (my_daycount() == 2)
+			desiredSpleenDrops = 1;
+		if (spleener != $familiar[none] && spleener.drops_today < desiredSpleenDrops) {
+			use_familiar(spleener);
+		} else if (have_familiar($familiar[Fist Turkey]) && $familiar[Fist Turkey].drops_today < 5) {
 			use_familiar($familiar[Fist Turkey]);
-		} else if (have_familiar($familiar[Golden Monkey])) {
-			use_familiar($familiar[Golden Monkey]);
-		} else if (have_familiar($familiar[Grim Brother])) {
-			use_familiar($familiar[Grim Brother]);
-		} else if (have_familiar($familiar[Unconscious Collective])) {
-			use_familiar($familiar[Unconscious Collective]);
 		} else if (have_familiar($familiar[Galloping Grill])) {
 			use_familiar($familiar[Galloping Grill]);
 		} else if (have_familiar($familiar[Crimbo Shrub])) {
@@ -383,6 +392,7 @@ string combat(int round, string opp, string text) { //always uses this script's 
 }
 
 void combatAdv(location where, boolean fighting) {
+	setFamiliar();
 	if (have_effect($effect[Springy Fusilli]) == 0) {
 		chateauCast($skill[Springy Fusilli]);
 	}
@@ -404,10 +414,12 @@ void YRAdv(location where) { //sets crimbo shrub as active familiar first, then 
 	familiar prevfam = my_familiar();
 	if(have_familiar($familiar[Crimbo Shrub])) {
 		use_familiar($familiar[Crimbo Shrub]);
+		lockFamiliar = true;
 	}
 	combatAdv(where, false);
 	if (prevfam != $familiar[Crimbo Shrub]) {
 		use_familiar(prevfam);
+		lockFamiliar = false;
 	}
 }
 
@@ -483,7 +495,7 @@ void summonDailyStuff() {
 	if (have_skill($skill[Summon Taffy])) {
 		while (mp_cost($skill[Summon Taffy]) < 30) {
 			chateauCast($skill[Summon Taffy]);
-		}
+}
 	}
 }
 
@@ -525,7 +537,9 @@ boolean giantGrowth() {
 		restore_hp(my_maxhp());
 		familiar curfam = my_familiar();
 		use_familiar($familiar[none]);
+		lockFamiliar = true;
 		adv1($location[The Dire Warren], -1, "combat");
+		lockFamiliar = false;
 		use_familiar(curfam);
 		if(have_effect($effect[Giant Growth]) > 0) {
 			return true;
@@ -1079,6 +1093,7 @@ void powerlevel() {
 				saveProgress(25);
 			}
 			if(statemap["questStage"] == 25) {
+				lockFamiliar = true;
 				location farmzone;
 				if (get_property_boolean("stenchAirportAlways")) {
 					farmzone = $location[Uncle Gator's Country Fun-Time Liquid Waste Sluice];
@@ -1114,6 +1129,7 @@ void powerlevel() {
 					turnsfarmed += 1;
 				}
 				cli_execute("mood clear");
+				lockFamiliar = false;
 				saveProgress(26);
 			}
 		}
@@ -1389,30 +1405,30 @@ void drinkBestSize1() { //I prolly should have had this take a "how many" argume
 }
 
 boolean fill2liver() { //returns false if it can't fill 2 liver
-	int size1s = $item[astral pilsner].available_amount() + $item[Ambitious Turkey].available_amount() + $item[Agitated Turkey].available_amount() + $item[thermos full of Knob coffee].available_amount() + $item[Cold One].available_amount();
+		int size1s = $item[astral pilsner].available_amount() + $item[Ambitious Turkey].available_amount() + $item[Agitated Turkey].available_amount() + $item[thermos full of Knob coffee].available_amount() + $item[Cold One].available_amount();
 	if (size1s > 1) { //size 1 booze always preferred over size 2 booze; a level 8 Cold One is slightly worse than Whinskey, but it either doesn't compete with it or is accompanied by another better 1-size booze
-		drinkBestSize1();
-		drinkBestSize1();
+			drinkBestSize1();
+				drinkBestSize1();
 		return true;
-	} else if ($item[Dinsey Whinskey].available_amount() > 0) {
-		drink(1, $item[Dinsey Whinskey]);
+			} else if ($item[Dinsey Whinskey].available_amount() > 0) {
+				drink(1, $item[Dinsey Whinskey]);
 		return true;
-	} else if (get_property_int("_speakeasyDrinksDrunk") < 3) {
-		visit_url("clan_viplounge.php?preaction=speakeasydrink&drink=6&pwd="+my_hash()); //sockadollager; saves 2 turns on spell dmg test but is still the worst for daycount overall
+			} else if (get_property_int("_speakeasyDrinksDrunk") < 3) {
+				visit_url("clan_viplounge.php?preaction=speakeasydrink&drink=6&pwd="+my_hash()); //sockadollager; saves 2 turns on spell dmg test but is still the worst for daycount overall
 		return true;
-	} else { //drink what you can
-		drinkBestSize1();
+			} else { //drink what you can
+				drinkBestSize1();
 		return false;
-	}
-}
+			}
+			}
 
 void nightcap() {
 	if (my_inebriety() < 14) { //ideally I would use some algorithm to solve for the knapsack problem but meh whatever this'll do
 		while (14 - my_inebriety() > 1 && fill2liver()) {} //fills 2 liver until you have 1 or 0 left to fill or it fails to fill it
 		if (my_inebriety() == 13) {
-			drinkBestSize1();
-		}
-	}
+				drinkBestSize1();
+			}
+		} 
 	drink(1, $item[emergency margarita]);
 }
 
@@ -1450,7 +1466,6 @@ void day1setup() {
 		return;
 	}
 	visit_url("council.php");
-	setFamiliar();
 	decorateShrub();
 	visit_url("tutorial.php?action=toot"); //get letter
 	if ($item[Letter from King Ralph XI].available_amount() > 0) {
