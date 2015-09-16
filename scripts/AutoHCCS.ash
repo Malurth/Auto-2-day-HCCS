@@ -495,7 +495,7 @@ void summonDailyStuff() {
 	if (have_skill($skill[Summon Taffy])) {
 		while (mp_cost($skill[Summon Taffy]) < 30) {
 			chateauCast($skill[Summon Taffy]);
-}
+		}
 	}
 }
 
@@ -1405,30 +1405,30 @@ void drinkBestSize1() { //I prolly should have had this take a "how many" argume
 }
 
 boolean fill2liver() { //returns false if it can't fill 2 liver
-		int size1s = $item[astral pilsner].available_amount() + $item[Ambitious Turkey].available_amount() + $item[Agitated Turkey].available_amount() + $item[thermos full of Knob coffee].available_amount() + $item[Cold One].available_amount();
+	int size1s = $item[astral pilsner].available_amount() + $item[Ambitious Turkey].available_amount() + $item[Agitated Turkey].available_amount() + $item[thermos full of Knob coffee].available_amount() + $item[Cold One].available_amount();
 	if (size1s > 1) { //size 1 booze always preferred over size 2 booze; a level 8 Cold One is slightly worse than Whinskey, but it either doesn't compete with it or is accompanied by another better 1-size booze
-			drinkBestSize1();
-				drinkBestSize1();
+		drinkBestSize1();
+		drinkBestSize1();
 		return true;
-			} else if ($item[Dinsey Whinskey].available_amount() > 0) {
-				drink(1, $item[Dinsey Whinskey]);
+	} else if ($item[Dinsey Whinskey].available_amount() > 0) {
+		drink(1, $item[Dinsey Whinskey]);
 		return true;
-			} else if (get_property_int("_speakeasyDrinksDrunk") < 3) {
-				visit_url("clan_viplounge.php?preaction=speakeasydrink&drink=6&pwd="+my_hash()); //sockadollager; saves 2 turns on spell dmg test but is still the worst for daycount overall
+	} else if (get_property_int("_speakeasyDrinksDrunk") < 3) {
+		visit_url("clan_viplounge.php?preaction=speakeasydrink&drink=6&pwd="+my_hash()); //sockadollager; saves 2 turns on spell dmg test but is still the worst for daycount overall
 		return true;
-			} else { //drink what you can
-				drinkBestSize1();
+	} else { //drink what you can
+		drinkBestSize1();
 		return false;
-			}
-			}
+	}
+}
 
 void nightcap() {
 	if (my_inebriety() < 14) { //ideally I would use some algorithm to solve for the knapsack problem but meh whatever this'll do
 		while (14 - my_inebriety() > 1 && fill2liver()) {} //fills 2 liver until you have 1 or 0 left to fill or it fails to fill it
 		if (my_inebriety() == 13) {
-				drinkBestSize1();
-			}
-		} 
+			drinkBestSize1();
+		}
+	} 
 	drink(1, $item[emergency margarita]);
 }
 
