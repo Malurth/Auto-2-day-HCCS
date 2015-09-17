@@ -727,6 +727,7 @@ void weaponTest() {
 		chateauCast($skill[Jackasses' Symphony of Destruction]);
 		chateauCast($skill[Tenacity of the Snapper]);
 		chateauCast($skill[Song of the North]);
+		chateauCast($skill[Scowl of the Auk]);
 		useIfHave(1, $item[Gene Tonic: Beast]);
 		while (my_level() < 8 && free_rest()) { //expends free rests until level 8 or running out
 			if (have_skill($skill[Summon Taffy]) && my_mp() > (mp_cost($skill[Summon Taffy]) + 50)) {
@@ -969,6 +970,7 @@ void moxieTest() {
 		chateauCast($skill[Moxie of the Mariachi]);
 		chateauCast($skill[Disco Aerobics]);
 		chateauCast($skill[Blubber Up]);
+		chateauCast($skill[Disco Smirk]);
 		useIfHave(1, $item[dollop of barbecue sauce]);
 		useIfHave(1, $item[pressurized potion of pulchritude]);
 		useIfHave(1, $item[serum of sarcasm]);
@@ -1029,6 +1031,14 @@ void noncombatTest() {
 	
 }
 
+boolean level2unlocked() {
+	buffer page = visit_url("place.php?whichplace=faqdungeon");
+	if (contains_text(page, "snarfblat=320")) {
+		return true;
+	}
+	return false;
+}
+
 void powerlevel() {
 	if(statemap["questStage"] == 24 || statemap["questStage"] == 25) {
 		if (!hasScalingZone()) {
@@ -1051,6 +1061,15 @@ void powerlevel() {
 				chateauCast($skill[Ur-Kel's Aria of Annoyance]);
 				chateauCast($skill[Ur-Kel's Aria of Annoyance]);
 				chateauCast($skill[Ur-Kel's Aria of Annoyance]);
+				chateauCast($skill[The Magical Mojomuscular Melody]);
+				chateauCast($skill[The Magical Mojomuscular Melody]);
+				chateauCast($skill[The Magical Mojomuscular Melody]);
+				chateauCast($skill[Sauce Contemplation]);
+				chateauCast($skill[Sauce Contemplation]);
+				chateauCast($skill[Sauce Contemplation]);
+				chateauCast($skill[Manicotti Meditation]);
+				chateauCast($skill[Manicotti Meditation]);
+				chateauCast($skill[Manicotti Meditation]);
 				chateauCast($skill[Pride of the Puffin]);
 				chateauCast($skill[Pride of the Puffin]);
 				chateauCast($skill[Drescher's Annoying Noise]);
@@ -1115,10 +1134,8 @@ void powerlevel() {
 					if (my_adventures() == 0) {
 						abort("Ran out of adventures.");
 					}
-					if (farmzone == $location[Video Game Level 1] && turnsfarmed == 8) { //refresh video game level 1 zone; should have 2 magazines
-						visit_url("inv_use.php?pwd&whichitem=6174&confirm=Yep.");
-						cli_execute("inv refresh");
-						visit_url("place.php?whichplace=faqdungeon");
+					if (farmzone == $location[Video Game Level 1] && level2unlocked()) {
+						farmzone = $location[Video Game Level 2];
 					}
 					combatAdv(farmzone, true);
 					if (have_effect($effect[beaten up]) > 0) {
