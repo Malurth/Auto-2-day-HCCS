@@ -5,6 +5,8 @@ What this?
 ----------------
 This is a KoLmafia script to automatically complete the Community Service challenge path in Hardcore within two days. Or attempt to, anyway. It largely follows yojimbos_law's 2-day HCCS guide, located here: http://forums.kingdomofloathing.com/vb/showpost.php?p=4769933&postcount=345
 
+I'd reccomend giving it a once-over since it details how to best prepare yourself overall, and describes how the run goes.
+
 How use?
 ----------------
 Install it by running this command in KoLmafia's graphical CLI:
@@ -24,14 +26,13 @@ This script is quite targeted; if you don't have the right stuff/class it will i
 - Have Chateau Mantegna access, Clan V.I.P. lounge access (with speakeasy/hotdogs), and the Deck of Every Card.
 
 It also expects that you, before ascending:
-- Have a ceiling fan in the chateau
-- Have a painting of a dairy goat in the chateau
+- Have your chateau prepared with a ceiling fan, foreign language tapes, a continental juice bar, and a painting of a dairy goat
 - Chose astral pilsners for your consumables
 
 If that's all you have it almost certainly will fail to hit 2-day, but that's the basic stuff needed to run it.
 
 Anything else I should know?
 ----------------
-Yes: run at your own risk. At least for now, I am not all that confident in the script's efficacy or even ability to run without bugging out. It has successfully completed a fully automatic 2-day HCCS for me, but only just barely and I have a lot of stuff. It also has not had many test runs done either, so yeah. Code contributions from more skilled coders than I would be welcome :)
+Yes: run at your own risk. The script isn't too unstable anymore, and has been netting me as well as others consistent 2-dayers now, but it is still liable to bug out/malfunction or just fail to hit 2-day (for instance, by getting beaten up by the dairy goat if you don't have a few handy skills for combat). By running this script, you are accepting that risk yourself.
 
 Oh, also, KoLmafia often doesn't realize you actually have the charters unlocked, and as such the script will skip any charters that mafia erroneously thinks you don't have. To fix this, go to [your KoLmafia installation folder]\\settings\\[your username]_prefs.txt, and inside that file search for the variables "stenchAirportAlways" (Dinsey), "hotAirportAlways" (volcano), "spookyAirportAlways" (Conspiracy), and "sleazyAirportAlways" (beach); if any of those are set to "false" when in reality you actually have them, set them to "true" and save the file. Tada. Once you do this once you will never have to do it again, so I'd recommend checking this before you run it the first time.
