@@ -498,6 +498,14 @@ void summonDailyStuff() {
 	}
 }
 
+void useTaffies(item taffy) {
+	if (taffy.available_amount() > 5) {
+		use(5, taffy);
+	} else {
+		useIfHave(taffy.available_amount(), $item[pulled yellow taffy]);
+	}
+}
+
 int advToSemirare() {
 	for i from 0 to 30 { //this is ridiculous.
 		if (get_counters("Fortune Cookie", i, i) != "") {
@@ -707,6 +715,7 @@ void hotTest() {
 			}
 			visit_url("clan_viplounge.php?preaction=speakeasydrink&drink=7&pwd="+my_hash()); //ish kabibble
 		}
+		cli_execute("shrug ode");
 		saveProgress(23);
 	}
 	
@@ -728,6 +737,7 @@ void weaponTest() {
 		chateauCast($skill[Tenacity of the Snapper]);
 		chateauCast($skill[Song of the North]);
 		chateauCast($skill[Scowl of the Auk]);
+		chateauCast($skill[The Magical Mojomuscular Melody]);
 		useIfHave(1, $item[Gene Tonic: Beast]);
 		while (my_level() < 8 && free_rest()) { //expends free rests until level 8 or running out
 			if (have_skill($skill[Summon Taffy]) && my_mp() > (mp_cost($skill[Summon Taffy]) + 50)) {
@@ -758,6 +768,7 @@ void weaponTest() {
 				drink(1, $item[astral pilsner]);
 			}
 		}
+		cli_execute("shrug ode");
 		saveProgress(10);
 	}
 	
@@ -791,7 +802,7 @@ void itemTest() {
 		useIfHave(1, $item[Gene Tonic: Pirate]);
 		useIfHave(1, $item[tin cup]);
 		useIfHave(1, $item[cyclops eyedrops]);
-		useIfHave($item[pulled yellow taffy].available_amount(), $item[pulled yellow taffy]);
+		useTaffies($item[pulled yellow taffy]);
 		if ($item[Dinsey Whinskey].available_amount() > 0 && my_inebriety() < 13) {
 			if (have_effect($effect[Ode to Booze]) < 2) {
 				chateauCast($skill[The Ode to Booze]);
@@ -804,6 +815,7 @@ void itemTest() {
 			}
 			drink(1, $item[Agitated Turkey]);
 		}
+		cli_execute("shrug ode");
 		chateauCast($skill[Fat Leon's Phat Loot Lyric]);
 		chateauCast($skill[Singer's Faithful Ocelot]);
 		saveProgress(13);
@@ -837,6 +849,7 @@ void allStatBuffs() {
 			chateauCast($skill[The Ode to Booze]);
 		}
 		visit_url("clan_viplounge.php?preaction=speakeasydrink&drink=5&pwd="+my_hash()); //bee's knees
+		cli_execute("shrug ode");
 	}
 }
 
@@ -881,7 +894,7 @@ void hpTest() {
 	}
 }
 
-void spellTest() { //buffing for this test is actually handled at the end of day 2 so there's not much here.
+void spellTest() { //buffing for this test is actually handled at the end of day 1 so there's not much here.
 	if(statemap["questStage"] >= 19) {
 		return;
 	}
@@ -924,7 +937,7 @@ void muscleTest() {
 		useIfHave(1, $item[jar of &quot;Creole Lady&quot; marrrmalade]);
 		useIfHave(1, $item[dollop of barbecue sauce]);
 		useIfHave(1, $item[Ben-Gal&trade; Balm]);
-		useIfHave($item[pulled orange taffy].available_amount(), $item[pulled orange taffy]);
+		useTaffies($item[pulled orange taffy]);
 		if (have_effect($effect[Phorcefullness]) == 0) {
 			useIfHave(1, $item[philter of phorce]);
 		}
@@ -948,7 +961,7 @@ void mystTest() {
 		chateauCast($skill[Sauce Contemplation]);
 		chateauCast($skill[Manicotti Meditation]);
 		useIfHave(1, $item[ointment of the occult]);
-		useIfHave($item[pulled violet taffy].available_amount(), $item[pulled violet taffy]);
+		useTaffies($item[pulled violet taffy]);
 		buy(1, $item[glittery mascara]);
 		use(1, $item[glittery mascara]);
 		allStatBuffs();
@@ -974,7 +987,7 @@ void moxieTest() {
 		useIfHave(1, $item[dollop of barbecue sauce]);
 		useIfHave(1, $item[pressurized potion of pulchritude]);
 		useIfHave(1, $item[serum of sarcasm]);
-		useIfHave($item[pulled red taffy].available_amount(), $item[pulled red taffy]);
+		useTaffies($item[pulled red taffy]);
 		buy(1, $item[hair spray]);
 		use(1, $item[hair spray]);
 		if (have_effect($effect[Expert Oiliness]) == 0) {
@@ -996,6 +1009,7 @@ void famTest() {
 	if(statemap["questStage"] == 34) {
 		chateauCast($skill[Empathy of the Newt]);
 		chateauCast($skill[Leash of Linguini]);
+		useTaffies($item[pulled blue taffy]);
 		if($item[vintage smart drink].available_amount() > 0) {
 			chateauCast($skill[The Ode to Booze]);
 			chateauCast($skill[The Ode to Booze]);
@@ -1051,16 +1065,24 @@ void powerlevel() {
 				useIfHave(1, $item[experimental serum G-9]);
 				buy(5, $item[glittery mascara]);
 				use(5, $item[glittery mascara]);
-				if ($item[hot ashes].available_amount() > 1) {
-					create(1, $item[ash soda]);
-					use(1, $item[ash soda]);
+				if ($item[FunFunds&trade;].available_amount() > 0) { 
+					buy($coinmaster[The Dinsey Company Store], 1, $item[Dinsey face paint]);
+					use(1, $item[Dinsey face paint]);
 				}
+				useTaffies($item[pulled blue taffy]);
 				chateauCast($skill[The Ode to Booze]);
 				visit_url("clan_viplounge.php?preaction=speakeasydrink&drink=5&pwd="+my_hash()); //bee's knees
+				cli_execute("shrug ode");
 				//okay I prolly should have made another function that accepted a # of casts parameter but whatever
 				chateauCast($skill[Ur-Kel's Aria of Annoyance]);
 				chateauCast($skill[Ur-Kel's Aria of Annoyance]);
 				chateauCast($skill[Ur-Kel's Aria of Annoyance]);
+				chateauCast($skill[Aloysius' Antiphon of Aptitude]);
+				chateauCast($skill[Aloysius' Antiphon of Aptitude]);
+				chateauCast($skill[Aloysius' Antiphon of Aptitude]);
+				chateauCast($skill[Stevedave's Shanty of Superiority]);
+				chateauCast($skill[Stevedave's Shanty of Superiority]);
+				chateauCast($skill[Stevedave's Shanty of Superiority]);
 				chateauCast($skill[The Magical Mojomuscular Melody]);
 				chateauCast($skill[The Magical Mojomuscular Melody]);
 				chateauCast($skill[The Magical Mojomuscular Melody]);
@@ -1082,12 +1104,6 @@ void powerlevel() {
 				chateauCast($skill[Empathy of the Newt]);
 				chateauCast($skill[Wry Smile]);
 				chateauCast($skill[Wry Smile]);
-				chateauCast($skill[Aloysius' Antiphon of Aptitude]);
-				chateauCast($skill[Aloysius' Antiphon of Aptitude]);
-				chateauCast($skill[Aloysius' Antiphon of Aptitude]);
-				chateauCast($skill[Stevedave's Shanty of Superiority]);
-				chateauCast($skill[Stevedave's Shanty of Superiority]);
-				chateauCast($skill[Stevedave's Shanty of Superiority]);
 				while (free_rests_left() > 1) {
 					if (have_skill($skill[Summon Taffy]) && my_mp() > (mp_cost($skill[Summon Taffy]) + 100)) {
 						cast($skill[Summon Taffy]);
@@ -1136,6 +1152,10 @@ void powerlevel() {
 					}
 					if (farmzone == $location[Video Game Level 1] && level2unlocked()) {
 						farmzone = $location[Video Game Level 2];
+					}
+					if ($item[hot ashes].available_amount() > 1) {
+						create(1, $item[ash soda]);
+						use(1, $item[ash soda]);
 					}
 					combatAdv(farmzone, true);
 					if (have_effect($effect[beaten up]) > 0) {
@@ -1234,6 +1254,7 @@ void getCalderaDNA() {
 			}
 		}
 		cli_execute("mood clear");
+		cli_execute("hottub");
 		while ($item[Gene Tonic: Elemental].available_amount() == 0 && get_property_boolean("stenchAirportAlways")) {
 			if (my_adventures() == 0) {
 				abort("Ran out of adventures.");
@@ -1458,6 +1479,8 @@ void endDay1() { //final actions of day 1; spell test buffing goes here
 	if (my_inebriety() < 14) {
 		chateauCast($skill[The Ode to Booze]);
 	}
+	chateauCast($skill[Arched Eyebrow of the Archmage]);
+	chateauCast($skill[Spirit of Garlic]);
 	chateauCast($skill[Jackasses' Symphony of Destruction]);
 	chateauCast($skill[Song of Sauce]);
 	if(get_property_boolean("barrelShrineUnlocked")) {
@@ -1474,6 +1497,7 @@ void endDay1() { //final actions of day 1; spell test buffing goes here
 	maximize("adv", false);
 	chateaumantegna_buyStuff($item[Artificial Skylight]);
 	nightcap();
+	cli_execute("shrug ode");
 	saveProgress(17);
 }
 
@@ -1589,6 +1613,7 @@ void initialDrinks() { //drinking after day 1 setup but before coiling wire
 		create(1, $item[tin cup]);
 	}
 	visit_url("clan_viplounge.php?preaction=speakeasydrink&drink=4&pwd="+my_hash()); //lucky lindy
+	cli_execute("shrug ode");
 	saveProgress(2);
 }
 
