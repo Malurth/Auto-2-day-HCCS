@@ -75,7 +75,7 @@ void decorateShrub() {
 	if(have_familiar($familiar[Crimbo Shrub]) && !get_property_boolean("_shrubDecorated")) {
 		use_familiar($familiar[Crimbo Shrub]);
 		visit_url("inv_use.php?pwd=&which=3&whichitem=7958");
-		visit_url("choice.php?pwd=&whichchoice=999&option=1&topper=1&lights=1&garland=1&gift=1");
+		visit_url("choice.php?pwd=&whichchoice=999&option=1&topper=2&lights=1&garland=1&gift=1");
 	}
 	use_familiar(current);
 }
@@ -318,8 +318,8 @@ string customCombat(int round) {
 	} else if (have_skill($skill[Saucegeyser]) && my_mp() >= mp_cost($skill[Saucegeyser])) {
 		return "skill Saucegeyser";
 	} else {
-		print("Resorting to basic attack", "red");
-		return "attack";
+		print("Resorting to CCS", "red");
+		return get_ccs_action(round);
 	}
 }
 
