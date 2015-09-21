@@ -299,6 +299,8 @@ void chewSpleen() {
 		chew(1, $item[powdered gold]);
 	} else if ($item[Unconscious Collective Dream Jar].available_amount() > 0) {
 		chew(1, $item[Unconscious Collective Dream Jar]);
+	} else if ($item[nasty snuff].available_amount() > 0) {
+		chew(1, $item[nasty snuff]);
 	}
 }
 
@@ -591,7 +593,9 @@ void getG9Serum() { //like 0-7 turns prolly
 				print("Had to restort to meat-MP instead of chateau rest", "red");
 			}
 		}
-		adv1($location[The Secret Government Laboratory], -1, "combat");
+		if ($item[Personal Ventilation Unit].available_amount() < 1) {
+			adv1($location[The Secret Government Laboratory], -1, "combat");
+		}
 		if ($item[Personal Ventilation Unit].available_amount() > 0) {
 			equip($item[Personal Ventilation Unit]);
 		} else {
@@ -750,7 +754,7 @@ void weaponTest() {
 			if (free_rests_left() > 0) {
 				print("Reached level 8 with "+ free_rests_left() +" free rests left", "green");
 			} else {
-				print("Reaced level 8, but ran out of free rests", "blue");
+				print("Reached level 8, but ran out of free rests", "blue");
 			}
 		}
 		saveProgress(9);
@@ -867,6 +871,7 @@ void hpTest() {
 		buy(2, $item[Ben-Gal&trade; Balm]);
 		use(1, $item[Ben-Gal&trade; Balm]);
 		chateauCast($skill[Song of Starch]);
+		chateauCast($skill[Seal Clubbing Frenzy]);
 		chateauCast($skill[Stevedave's Shanty of Superiority]);
 		chateauCast($skill[Reptilian Fortitude]);
 		chateauCast($skill[The Power Ballad of the Arrowsmith]);
@@ -1269,7 +1274,7 @@ void getCalderaDNA() {
 			visit_url("place.php?whichplace=airport_stench&action=airport3_tunnels");
 			visit_url("choice.php?pwd&whichchoice=1067&option=6&choiceform6=Waste+Disposal");
 			visit_url("choice.php?pwd&whichchoice=1067&option=7&choiceform7=Exit");
-			if ($item[FunFunds&trade;].available_amount() >= 4) {
+			if ($item[FunFunds&trade;].available_amount() > 4) {
 				buy($coinmaster[The Dinsey Company Store], 2, $item[Dinsey Whinskey]);
 			} else {
 				buy($coinmaster[The Dinsey Company Store], 1, $item[Dinsey Whinskey]);
