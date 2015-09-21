@@ -21,7 +21,7 @@ What prerequisites?
 ----------------
 This script is quite targeted; if you don't have the right stuff/class it will immediately abort, and it will probably fail to hit 2-day if you don't have a bunch of other stuff anyway. That being said, the most basic prerequisites are:
 - Ascend as a Sauceror
-- Ascend as a Muscle moon sign (in other words, have access to the friendly Degrassi Knoll)
+- Ascend with the Wallaby moon sign (well any Knoll-unlocking sign will do, but pick that one)
 - Have the skills Summon Smithsness, Ode To Booze and Advanced Saucecrafting available
 - Have Chateau Mantegna access, Clan V.I.P. lounge access (with speakeasy/hotdogs), and the Deck of Every Card.
 
