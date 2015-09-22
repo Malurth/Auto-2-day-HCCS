@@ -393,6 +393,9 @@ string combat(int round, string opp, string text) { //always uses this script's 
 }
 
 void combatAdv(location where, boolean fighting) {
+	if (my_adventures() < 1) {
+		abort("Ran out of adventures.");
+	}
 	setFamiliar();
 	if (have_effect($effect[Springy Fusilli]) == 0) {
 		chateauCast($skill[Springy Fusilli]);
@@ -411,6 +414,9 @@ void combatAdv(location where, boolean fighting) {
 void YRAdv(location where) { //sets crimbo shrub as active familiar first, then switches back...looks dumb if it takes multiple adv to get the YR target but whatever
 	if(have_effect($effect[Everything Looks Yellow]) > 0) {
 		abort("Yellow ray time, but you still have Everything Looks Yellow.");
+	}
+	if (my_adventures() < 1) {
+		abort("Ran out of adventures.");
 	}
 	familiar prevfam = my_familiar();
 	if(have_familiar($familiar[Crimbo Shrub])) {
@@ -1510,6 +1516,7 @@ void day1setup() {
 	if(statemap["questStage"] >= 1) {
 		return;
 	}
+	set_property("autoSatisfyWithNPCs", "true");
 	visit_url("council.php");
 	decorateShrub();
 	visit_url("tutorial.php?action=toot"); //get letter
