@@ -1145,10 +1145,6 @@ void powerlevel() {
 					calderaMood(); //same deal here
 				} else if (get_property_boolean("spookyAirportAlways")) {
 					farmzone = $location[The Deep Dark Jungle];
-					if ($item[Coinspiracy].available_amount() > 0) {
-						buy($coinmaster[The Canteen], 1, $item[Jungle Juice]);
-						drink(1, $item[Jungle Juice]);
-					}
 				} else if (get_property_boolean("sleazyAirportAlways")) {
 					farmzone = $location[Sloppy Seconds Diner];
 				} else if (get_property_boolean("hotAirportAlways")) {
