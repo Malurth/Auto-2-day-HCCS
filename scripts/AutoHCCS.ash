@@ -1508,11 +1508,28 @@ void endDay1() { //final actions of day 1; spell test buffing goes here
 	saveProgress(17);
 }
 
+void setProperties() {
+	set_property("autoSatisfyWithNPCs", "true");
+	buffer page = visit_url("place.php?whichplace=airport");
+	if (contains_text(page, "airport_sleaze")) {
+		set_property("sleazyAirportAlways", "true");
+	}
+	if (contains_text(page, "airport_hot")) {
+		set_property("hotAirportAlways", "true");
+	}
+	if (contains_text(page, "airport_stench")) {
+		set_property("stenchAirportAlways", "true");
+	}
+	if (contains_text(page, "airport_spooky")) {
+		set_property("spookyAirportAlways", "true");
+	}
+}
+
 void day1setup() {
 	if(statemap["questStage"] >= 1) {
 		return;
 	}
-	set_property("autoSatisfyWithNPCs", "true");
+	setProperties();
 	visit_url("council.php");
 	decorateShrub();
 	visit_url("tutorial.php?action=toot"); //get letter
@@ -1537,6 +1554,9 @@ void day1setup() {
 	autosell(1, $item[1952 Mickey Mantle card]);
 	cli_execute("cheat giant growth");
 	cli_execute("cheat empress");
+	if ($item[Dramatic&trade; range].available_amount() == 0) {
+		buy(1, $item[Dramatic&trade; range]);
+	}
 	summonDailyStuff();
 	create(1, $item[Hairpiece on Fire]);
 	equip($item[Hairpiece on Fire]);
