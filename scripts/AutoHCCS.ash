@@ -400,6 +400,9 @@ void combatAdv(location where, boolean fighting) {
 	if (have_effect($effect[Springy Fusilli]) == 0) {
 		chateauCast($skill[Springy Fusilli]);
 	}
+	if (have_effect($effect[Reptilian Fortitude]) == 0) {
+		chateauCast($skill[Reptilian Fortitude]);
+	}
 	if (fighting && have_skill($skill[Curse of Weaksauce]) && have_skill($skill[Saucegeyser]) && my_mp() < (mp_cost($skill[Curse of Weaksauce]) + mp_cost($skill[Saucegeyser]))) {
 		if (!free_rest()) {
 			restore_mp(mp_cost($skill[Curse of Weaksauce]) + mp_cost($skill[Saucegeyser]));
@@ -1529,8 +1532,8 @@ void day1setup() {
 	if(statemap["questStage"] >= 1) {
 		return;
 	}
-	setProperties();
 	visit_url("council.php");
+	setProperties();
 	decorateShrub();
 	visit_url("tutorial.php?action=toot"); //get letter
 	if ($item[Letter from King Ralph XI].available_amount() > 0) {
@@ -1550,25 +1553,43 @@ void day1setup() {
 		buy(1, $item[tenderizing hammer]);
 	}
 	unlockSkeletonStore();
-	cli_execute("cheat mickey");
-	autosell(1, $item[1952 Mickey Mantle card]);
-	cli_execute("cheat giant growth");
-	cli_execute("cheat empress");
+	if (get_property_int("_deckCardsDrawn") == 0) {
+		cli_execute("cheat mickey");
+		autosell(1, $item[1952 Mickey Mantle card]);
+		cli_execute("cheat giant growth");
+		cli_execute("cheat empress");
+	} else {
+		print("Skipping deck draws...");
+	}
 	if ($item[Dramatic&trade; range].available_amount() == 0) {
-		buy(1, $item[Dramatic&trade; range]);
+		buffer page = visit_url("campground.php?action=inspectkitchen");
+		if (!contains_text(page, "Dramatic")) {
+			buy(1, $item[Dramatic&trade; range]);
+			use(1, $item[Dramatic&trade; range]);
+		}
 	}
 	summonDailyStuff();
-	create(1, $item[Hairpiece on Fire]);
-	equip($item[Hairpiece on Fire]);
-	create(1, $item[Saucepanic]);
-	equip($item[Saucepanic]);
-	create(1, $item[A Light That Never Goes Out]);
-	equip($item[A Light That Never Goes Out]);
-	use(3, $item[Flaskfull of Hollow]);
+	if ($item[Hairpiece on Fire].available_amount() == 0) {
+		create(1, $item[Hairpiece on Fire]);
+		equip($item[Hairpiece on Fire]);
+	}
+	if ($item[Saucepanic].available_amount() == 0) {
+		create(1, $item[Saucepanic]);
+		equip($item[Saucepanic]);
+	}
+	if ($item[A Light That Never Goes Out].available_amount() == 0) {
+		create(1, $item[A Light That Never Goes Out]);
+		equip($item[A Light That Never Goes Out]);
+	}
+	if ($item[Flaskfull of Hollow].available_amount() == 3) {
+		use(3, $item[Flaskfull of Hollow]);
+	}
 	if (!have_familiar($familiar[Crimbo Shrub])) {
 		create(2, $item[Golden Light]);
 	}
-	create(1, $item[This Charming Flan]);
+	if ($item[This Charming Flan].available_amount() == 0) {
+		create(1, $item[This Charming Flan]);
+	}
 	buy(1, $item[frilly skirt]);
 	if (equipped_item($slot[pants]) == $item[none]) {
 		if (my_basestat($stat[moxie]) > 1) {
@@ -1604,8 +1625,12 @@ void day2setup() {
 	}
 	summonDailyStuff();
 	cli_execute("breakfast"); 
-	cli_execute("cheat forest");
-	cli_execute("cheat giant growth");
+	if (get_property_int("_deckCardsDrawn") == 0) {
+		cli_execute("cheat forest");
+		cli_execute("cheat giant growth");
+	} else {
+		print("Skipping deck draws...");
+	}
 	use(1, $item[Flaskfull of Hollow]);
 	create(3, $item[Louder Than Bomb]);
 	create(1, $item[Saucepanic]);
