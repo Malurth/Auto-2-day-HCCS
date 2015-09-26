@@ -1584,7 +1584,7 @@ void day1setup() {
 	if ($item[Flaskfull of Hollow].available_amount() == 3) {
 		use(3, $item[Flaskfull of Hollow]);
 	}
-	if (!have_familiar($familiar[Crimbo Shrub])) {
+	if (!have_familiar($familiar[Crimbo Shrub]) && $item[Golden Light].available_amount() == 0) {
 		create(2, $item[Golden Light]);
 	}
 	if ($item[This Charming Flan].available_amount() == 0) {
