@@ -1,6 +1,6 @@
 script "Automatic 2-day Hardcore Community Service";
 notify aabattery;
-since r16319;
+since r16335;
 //courtesy of yojimboS_LAW's 2-day HC guide
 //shoutouts to Cheesecookie, Ezandora, and Cannonfire40 for contributing a bit of code/advice
 
@@ -720,6 +720,7 @@ void hotTest() {
 		}
 		useIfHave(1, $item[scroll of Protection from Bad Stuff]);
 		useIfHave(1, $item[Gene Tonic: Elemental]);
+		useIfHave(1, $item[cuppa Frost tea]);
 		if (have_familiar($familiar[Exotic Parrot])) {
 			use_familiar($familiar[Exotic Parrot]);
 			chateauCast($skill[Leash of Linguini]);
@@ -762,6 +763,7 @@ void weaponTest() {
 		chateauCast($skill[Scowl of the Auk]);
 		chateauCast($skill[The Magical Mojomuscular Melody]);
 		useIfHave(1, $item[Gene Tonic: Beast]);
+		//useIfHave(1, $item[cuppa Twen tea]);
 		while (my_level() < 8 && free_rest()) { //expends free rests until level 8 or running out
 			if (have_skill($skill[Summon Taffy]) && my_mp() > (mp_cost($skill[Summon Taffy]) + 50)) {
 				cast($skill[Summon Taffy]);
@@ -825,6 +827,7 @@ void itemTest() {
 		useIfHave(1, $item[Gene Tonic: Pirate]);
 		useIfHave(1, $item[tin cup]);
 		useIfHave(1, $item[cyclops eyedrops]);
+		useIfHave(1, $item[cuppa Serendipi tea]);
 		useTaffies($item[pulled yellow taffy]);
 		if ($item[Dinsey Whinskey].available_amount() > 0 && my_inebriety() < 13) {
 			if (have_effect($effect[Ode to Booze]) < 2) {
@@ -880,6 +883,8 @@ void hpTest() {
 		use(1, $item[oil of expertise]);
 		useIfHave(1, $item[scroll of Puddingskin]);
 		useIfHave(1, $item[philter of phorce]);
+		useIfHave(1, $item[cuppa Feroci tea]);
+		//useIfHave(1, $item[cuppa Twen tea]);
 		if (have_effect($effect[Tomato Power]) == 0) {
 			useIfHave(1, $item[tomato juice of powerful power]);
 		}
@@ -926,6 +931,7 @@ void spellTest() { //buffing for this test is actually handled at the end of day
 		create(1, $item[cordial of concentration]);
 		use(1, $item[cordial of concentration]);
 	}
+	//useIfHave(1, $item[cuppa Twen tea]);
 	maximize("spell damage", false);
 	doTest(SPELLTEST);
 	saveProgress(19);
@@ -960,6 +966,7 @@ void muscleTest() {
 		useIfHave(1, $item[jar of &quot;Creole Lady&quot; marrrmalade]);
 		useIfHave(1, $item[dollop of barbecue sauce]);
 		useIfHave(1, $item[Ben-Gal&trade; Balm]);
+		useIfHave(1, $item[cuppa Feroci tea]);
 		useTaffies($item[pulled orange taffy]);
 		if (have_effect($effect[Phorcefullness]) == 0) {
 			useIfHave(1, $item[philter of phorce]);
@@ -990,6 +997,7 @@ void mystTest() {
 		allStatBuffs();
 		giantGrowth();
 		useIfHave(1, $item[bag of grain]);
+		useIfHave(1, $item[cuppa Wit tea]);
 		saveProgress(31);
 	}
 	if(statemap["questStage"] == 31) {
@@ -1010,6 +1018,7 @@ void moxieTest() {
 		useIfHave(1, $item[dollop of barbecue sauce]);
 		useIfHave(1, $item[pressurized potion of pulchritude]);
 		useIfHave(1, $item[serum of sarcasm]);
+		useIfHave(1, $item[cuppa Dexteri tea]);
 		useTaffies($item[pulled red taffy]);
 		buy(1, $item[hair spray]);
 		use(1, $item[hair spray]);
@@ -1032,6 +1041,7 @@ void famTest() {
 	if(statemap["questStage"] == 34) {
 		chateauCast($skill[Empathy of the Newt]);
 		chateauCast($skill[Leash of Linguini]);
+		useIfHave(1, $item[cuppa Loyal tea]);
 		useTaffies($item[pulled blue taffy]);
 		if($item[vintage smart drink].available_amount() > 0) {
 			chateauCast($skill[The Ode to Booze]);
@@ -1058,6 +1068,7 @@ void noncombatTest() {
 		useIfHave(1, $item[deodorant]);
 		useIfHave(1, $item[shady shades]);
 		useIfHave(1, $item[squeaky toy rose]);
+		useIfHave(1, $item[cuppa Obscuri tea]);
 		saveProgress(38);
 	}
 	if(statemap["questStage"] == 38) {
@@ -1127,6 +1138,7 @@ void powerlevel() {
 				chateauCast($skill[Empathy of the Newt]);
 				chateauCast($skill[Wry Smile]);
 				chateauCast($skill[Wry Smile]);
+				useIfHave(1, $item[cuppa Mediocri tea]);
 				while (free_rests_left() > 1) {
 					if (have_skill($skill[Summon Taffy]) && my_mp() > (mp_cost($skill[Summon Taffy]) + 100)) {
 						cast($skill[Summon Taffy]);
