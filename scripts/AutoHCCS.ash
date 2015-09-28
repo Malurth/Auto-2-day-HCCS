@@ -526,6 +526,15 @@ int advToSemirare() {
 	return 99999;
 }
 
+void basicItemDropBuffs() {
+	if (have_effect($effect[Fat Leon's Phat Loot Lyric]) == 0) {
+		chateauCast($skill[Fat Leon's Phat Loot Lyric]);
+	}
+	if (have_effect($effect[Singer's Faithful Ocelot]) == 0) {
+		chateauCast($skill[Singer's Faithful Ocelot]);
+	}
+}
+
 string checkGarden() {
 	buffer page = visit_url("campground.php");
 	if (contains_text(page, "A Winter Garden")) {
@@ -612,6 +621,7 @@ void getG9Serum() { //like 0-7 turns prolly
 		}
 		while($item[experimental serum G-9].available_amount() < 2) {
 			if (!getSRifCan()) {
+				basicItemDropBuffs();
 				combatAdv($location[The Secret Government Laboratory], true);
 			}
 		}
@@ -829,8 +839,7 @@ void itemTest() {
 			drink(1, $item[Agitated Turkey]);
 		}
 		cli_execute("shrug ode");
-		chateauCast($skill[Fat Leon's Phat Loot Lyric]);
-		chateauCast($skill[Singer's Faithful Ocelot]);
+		basicItemDropBuffs();
 		saveProgress(13);
 	}
 	if(statemap["questStage"] >= 14) {
