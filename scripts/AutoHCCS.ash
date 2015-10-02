@@ -345,6 +345,16 @@ string combat(int round, string opp, string text) { //always uses this script's 
 		} else {
 			return customCombat(round);
 		}
+	} else if ((opp == $monster[C<i>bzzt</i>er the Grisly Bear].to_string() || opp == $monster[Gurgle the Turgle].to_string() || opp == $monster[Skeezy the Jug Rat].to_string()) && $item[DNA extraction syringe].available_amount() > 0) { //DNA
+		if ($item[Gene Tonic: Construct].available_amount() == 0) {
+			if(round == 0) {
+				return "item DNA extraction syringe";
+			} else {
+				return customCombat(round - 1);
+			}
+		} else {
+			return customCombat(round);
+		}
 	} else if (opp == $monster[lava lamprey].to_string() && $item[DNA extraction syringe].available_amount() > 0) { //DNA
 		if (have_effect($effect[Human-Fish Hybrid]) == 0) {
 			if(round == 0) {
@@ -1041,6 +1051,7 @@ void famTest() {
 	if(statemap["questStage"] == 34) {
 		chateauCast($skill[Empathy of the Newt]);
 		chateauCast($skill[Leash of Linguini]);
+		useIfHave(1, $item[Gene Tonic: Construct]);
 		useIfHave(1, $item[cuppa Loyal tea]);
 		useTaffies($item[pulled blue taffy]);
 		if($item[vintage smart drink].available_amount() > 0) {
@@ -1189,6 +1200,12 @@ void powerlevel() {
 						use(1, $item[ash soda]);
 					}
 					combatAdv(farmzone, true);
+					if (farmzone == $location[Uncle Gator's Country Fun-Time Liquid Waste Sluice] && $item[Gene Tonic: Construct].available_amount() == 0) {
+						buffer page = visit_url("campground.php?action=workshed");
+						if (contains_text(page, "Human-Machine Hybrid")) {
+							visit_url("campground.php?action=dnapotion");
+						}
+					}
 					if (have_effect($effect[beaten up]) > 0) {
 						abort("Getting beaten up when trying to powerlevel. Consider changing custom combat script?");
 					}
@@ -1549,6 +1566,16 @@ void setProperties() {
 	}
 }
 
+void harvestTea() {
+	visit_url("campground.php?action=teatree");
+	visit_url("choice.php?pwd="+my_hash()+"&whichchoice=1104&option=2&choiceform2=Pick+a+low-hanging+tea");
+	if (my_daycount() == 1) {
+		visit_url("choice.php?itemid=8606&pwd="+my_hash()+"&whichchoice=1105&option=1"); //Frost tea
+	} else if (my_daycount() == 2) {
+		visit_url("choice.php?itemid=8620&pwd="+my_hash()+"&whichchoice=1105&option=1"); //Obscuri Tea
+	}
+}
+
 void day1setup() {
 	if(statemap["questStage"] >= 1) {
 		return;
@@ -1573,6 +1600,7 @@ void day1setup() {
 	if (have_skill($skill[Pulverize]) && $item[tenderizing hammer].available_amount() == 0) {
 		buy(1, $item[tenderizing hammer]);
 	}
+	harvestTea();
 	unlockSkeletonStore();
 	if (get_property_int("_deckCardsDrawn") == 0) {
 		cli_execute("cheat mickey");
