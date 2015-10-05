@@ -504,11 +504,12 @@ void cast(skill which) { //just casts it if you have it.
 
 void summonDailyStuff() {
 	use_skill(3, $skill[Summon Smithsness]);
+	chateauCast($skill[Summon Confiscated Things]);
 	chateauCast($skill[Advanced Saucecrafting]);
 	chateauCast($skill[Advanced Cocktailcrafting]);
 	chateauCast($skill[Pastamastery]);
 	chateauCast($skill[Grab a Cold One]);
-	chateauCast($skill[Spaghetti Breakfast]);
+	//chateauCast($skill[Spaghetti Breakfast]);
 	visit_url("campground.php?action=garden");
 	visit_url("campground.php?action=workshed");
 	visit_url("place.php?whichplace=chateau&action=chateau_desk2");
@@ -1673,6 +1674,7 @@ void day2setup() {
 		return;
 	}
 	summonDailyStuff();
+	harvestTea();
 	cli_execute("breakfast"); 
 	if (get_property_int("_deckCardsDrawn") == 0) {
 		cli_execute("cheat forest");
@@ -1733,6 +1735,7 @@ void doRun() { //main function
 		getCalderaDNA(); //elemental DNA tonic and fish hybrid
 		maybeUnlockIsland();
 		getG9Serum();
+		cli_execute("counters clear");
 		weaponTest();
 		itemTest();
 		getPotionIngredients();
