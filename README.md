@@ -29,7 +29,7 @@ It also expects that you, before ascending:
 - Have your chateau prepared with a ceiling fan, foreign language tapes, a continental juice bar, and a painting of a dairy goat
 - Chose astral pilsners for your consumables
 
-If that's all you have it almost certainly will fail to hit 2-day, but that's the basic stuff needed to run it.
+If that's all you have it almost certainly will fail to hit 2-day, but that's the basic stuff needed to run it. To greatly increase your chances of completing 2-day, I highly recommend also having the Winter Garden, DNA lab, and every airplane charter other than Spring Break Beach. Some IotMs such as the Fist Turkey, Crimbo Shrub, Galloping Grill, GameInform correspondence, and a standard-compliant spleen familiar will help as well, but much less significantly. Others, like Puck-man and the Mayo clinic, while potentially helpful, are currently entirely unsupported in the script.
 
 Anything else I should know?
 ----------------
