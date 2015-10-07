@@ -205,6 +205,19 @@ int free_rests_left() {
 	return total_free_rests() - get_property_int("timesRested");
 }
 
+// %mychange
+// Needs: purchasing, better handling
+boolean pullThenUse(item pull) {
+  if (!(pull.available_amount() > 0)) {
+    if (!take_storage(1, pull)) {
+      print("Failed to pull " + pull + "!", "red");
+      return false;
+    }
+  }
+  use(1, pull);
+  return true;
+}
+
 boolean useIfHave(int howmany, item what) {
 	if(what.available_amount() >= howmany) {
 		use(howmany, what);
@@ -737,6 +750,8 @@ void hotTest() {
 			chateauCast($skill[Leash of Linguini]);
 			chateauCast($skill[Empathy of the Newt]);
 		}
+    // %mychange
+    pullThenUse($item[SPF 451 lip balm]);
 		saveProgress(22);
 	} 
 	
@@ -929,6 +944,9 @@ void hpTest() {
 		if(doTest(HPTEST)) {
 			chew(1, $item[blood-drive sticker]);
 		}
+    // %mychange
+    pullThenUse($item[Super Weight-Gain 9000]);
+    pullThenUse($item[Red Foxglove]);
 		saveProgress(28);
 	}
 }
@@ -979,6 +997,8 @@ void muscleTest() {
 		useIfHave(1, $item[Ben-Gal&trade; Balm]);
 		useIfHave(1, $item[cuppa Feroci tea]);
 		useTaffies($item[pulled orange taffy]);
+    pullThenUse($item[Pressurized potion of puissance]);
+    pullThenUse($item[R&uuml;mpelstiltz]); //TEMPORARY
 		if (have_effect($effect[Phorcefullness]) == 0) {
 			useIfHave(1, $item[philter of phorce]);
 		}
@@ -1009,6 +1029,8 @@ void mystTest() {
 		giantGrowth();
 		useIfHave(1, $item[bag of grain]);
 		useIfHave(1, $item[cuppa Wit tea]);
+    pullThenUse($item[Pressurized potion of perspicacity]);
+    pullThenUse($item[R&uuml;mpelstiltz]); //TEMPORARY
 		saveProgress(31);
 	}
 	if(statemap["questStage"] == 31) {
@@ -1081,6 +1103,7 @@ void noncombatTest() {
 		useIfHave(1, $item[shady shades]);
 		useIfHave(1, $item[squeaky toy rose]);
 		useIfHave(1, $item[cuppa Obscuri tea]);
+    pullThenUse($item[Worst candy]);
 		saveProgress(38);
 	}
 	if(statemap["questStage"] == 38) {
