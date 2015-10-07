@@ -774,6 +774,7 @@ void weaponTest() {
 		chateauCast($skill[Scowl of the Auk]);
 		chateauCast($skill[The Magical Mojomuscular Melody]);
 		useIfHave(1, $item[Gene Tonic: Beast]);
+		useIfHave(1, $item[confiscated comic book]);
 		//useIfHave(1, $item[cuppa Twen tea]);
 		while (my_level() < 8 && free_rest()) { //expends free rests until level 8 or running out
 			if (have_skill($skill[Summon Taffy]) && my_mp() > (mp_cost($skill[Summon Taffy]) + 50)) {
@@ -978,6 +979,7 @@ void muscleTest() {
 		useIfHave(1, $item[dollop of barbecue sauce]);
 		useIfHave(1, $item[Ben-Gal&trade; Balm]);
 		useIfHave(1, $item[cuppa Feroci tea]);
+		useIfHave(1, $item[confiscated comic book]);
 		useTaffies($item[pulled orange taffy]);
 		if (have_effect($effect[Phorcefullness]) == 0) {
 			useIfHave(1, $item[philter of phorce]);
@@ -1002,6 +1004,7 @@ void mystTest() {
 		chateauCast($skill[Sauce Contemplation]);
 		chateauCast($skill[Manicotti Meditation]);
 		useIfHave(1, $item[ointment of the occult]);
+		useIfHave(1, $item[confiscated cell phone]);
 		useTaffies($item[pulled violet taffy]);
 		buy(1, $item[glittery mascara]);
 		use(1, $item[glittery mascara]);
@@ -1030,6 +1033,7 @@ void moxieTest() {
 		useIfHave(1, $item[pressurized potion of pulchritude]);
 		useIfHave(1, $item[serum of sarcasm]);
 		useIfHave(1, $item[cuppa Dexteri tea]);
+		useIfHave(1, $item[confiscated love note]);
 		useTaffies($item[pulled red taffy]);
 		buy(1, $item[hair spray]);
 		use(1, $item[hair spray]);
@@ -1552,6 +1556,7 @@ void endDay1() { //final actions of day 1; spell test buffing goes here
 
 void setProperties() {
 	set_property("autoSatisfyWithNPCs", "true");
+	set_property("grabCloversHardcore", "true");
 	buffer page = visit_url("place.php?whichplace=airport");
 	if (contains_text(page, "airport_sleaze")) {
 		set_property("sleazyAirportAlways", "true");
