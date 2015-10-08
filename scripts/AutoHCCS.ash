@@ -1089,12 +1089,9 @@ void moxieTest() {
 		useIfHave(1, $item[pressurized potion of pulchritude]);
 		useIfHave(1, $item[serum of sarcasm]);
 		useIfHave(1, $item[cuppa Dexteri tea]);
-<<<<<<< HEAD
     //%%mychange
     useIfHave(1, $item[R&uuml;mpelstiltz]);
-=======
 		useIfHave(1, $item[confiscated love note]);
->>>>>>> Malurth/master
 		useTaffies($item[pulled red taffy]);
 		buy(1, $item[hair spray]);
 		use(1, $item[hair spray]);
