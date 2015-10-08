@@ -205,16 +205,46 @@ int free_rests_left() {
 	return total_free_rests() - get_property_int("timesRested");
 }
 
-// %mychange
-// Needs: purchasing, better handling
-boolean pullThenUse(item pull) {
-  if (!(pull.available_amount() > 0)) {
-    if (!take_storage(1, pull)) {
-      print("Failed to pull " + pull + "!", "red");
+// %%mychange
+boolean pullDaily(boolean buy) {
+  // Check if we're even in softcore
+  if (in_hardcore()) {
+    return false;
+  }
+  // Determine pull list
+  // I don't want to hardcore these lists for flexibility but I guess this works for now (definitely not ideal list)
+  switch(my_daycount()) {
+    case 1:
+      items pullList = $items[Buddy Bjorn, Pressurized potion of perspicacity, R&uuml;mpelstiltz, R&uuml;mpelstiltz, R&uuml;mpelstiltz];
+      break;
+    case 2:
+      items pullList = $items[Super weight-gain 9000, SPF 451 lip balm, Worst candy, Red foxglove, Pressurized potion of puissance];
+      break;
+    default:
+      print("We don't know what to pull because you didn't finish within 2 days!", "red");
       return false;
+  }
+  foreach pull in pullList {
+    // Checks if there are pulls left
+    if(pulls_remaining() > 0) {
+      // Check if item is not storage
+      if(!(storage_amount(pull) > 0)) {
+        // Checks if we are buying items we don't have
+        if(buy) {
+          // Buys pull
+          if(!buy_using_storage(1, pull)) {
+            print("Failed to buy " + pull + "!", "red");
+          }
+        } else {
+          print("We are not pulling " + pull + " because it is not in storage and we are not buying items.", "red");
+        }
+      }
+      // Finally pulls item
+      if(!take_storage(1, pull)) {
+        print("Failed to pull " + pull + "!", "red");
+      }
     }
   }
-  use(1, pull);
   return true;
 }
 
@@ -751,7 +781,7 @@ void hotTest() {
 			chateauCast($skill[Empathy of the Newt]);
 		}
     // %mychange
-    pullThenUse($item[SPF 451 lip balm]);
+    useIfHave(1, $item[SPF 451 lip balm]);
 		saveProgress(22);
 	} 
 	
@@ -945,8 +975,8 @@ void hpTest() {
 			chew(1, $item[blood-drive sticker]);
 		}
     // %mychange
-    pullThenUse($item[Super Weight-Gain 9000]);
-    pullThenUse($item[Red Foxglove]);
+    useIfHave(1, $item[Super Weight-Gain 9000]);
+    useIfHave(1, $item[Red Foxglove]);
 		saveProgress(28);
 	}
 }
@@ -997,8 +1027,8 @@ void muscleTest() {
 		useIfHave(1, $item[Ben-Gal&trade; Balm]);
 		useIfHave(1, $item[cuppa Feroci tea]);
 		useTaffies($item[pulled orange taffy]);
-    pullThenUse($item[Pressurized potion of puissance]);
-    pullThenUse($item[R&uuml;mpelstiltz]); //TEMPORARY
+    useIfHave(1, $item[Pressurized potion of puissance]);
+    useIfHave(1, $item[R&uuml;mpelstiltz]); //TEMPORARY
 		if (have_effect($effect[Phorcefullness]) == 0) {
 			useIfHave(1, $item[philter of phorce]);
 		}
@@ -1029,8 +1059,9 @@ void mystTest() {
 		giantGrowth();
 		useIfHave(1, $item[bag of grain]);
 		useIfHave(1, $item[cuppa Wit tea]);
-    pullThenUse($item[Pressurized potion of perspicacity]);
-    pullThenUse($item[R&uuml;mpelstiltz]); //TEMPORARY
+    //%%mychange
+    useIfHave(1, $item[Pressurized potion of perspicacity]);
+    useIfHave(1, $item[R&uuml;mpelstiltz]); //TEMPORARY
 		saveProgress(31);
 	}
 	if(statemap["questStage"] == 31) {
@@ -1052,6 +1083,8 @@ void moxieTest() {
 		useIfHave(1, $item[pressurized potion of pulchritude]);
 		useIfHave(1, $item[serum of sarcasm]);
 		useIfHave(1, $item[cuppa Dexteri tea]);
+    //%%mychange
+    useIfHave(1, $item[R&uuml;mpelstiltz]);
 		useTaffies($item[pulled red taffy]);
 		buy(1, $item[hair spray]);
 		use(1, $item[hair spray]);
@@ -1103,7 +1136,8 @@ void noncombatTest() {
 		useIfHave(1, $item[shady shades]);
 		useIfHave(1, $item[squeaky toy rose]);
 		useIfHave(1, $item[cuppa Obscuri tea]);
-    pullThenUse($item[Worst candy]);
+    //%%mychange
+    useIfHave(1, $item[Worst candy]);
 		saveProgress(38);
 	}
 	if(statemap["questStage"] == 38) {
@@ -1751,6 +1785,7 @@ void doRun() { //main function
 			newSave();
 		}
 		day1setup();
+    pullDaily(); //%%mychange
 		initialDrinks();
 		getMilk(); //of magnesium
 		coilTest();
@@ -1768,6 +1803,7 @@ void doRun() { //main function
 	} else if (my_daycount() == 2 && actuallyrun) {
 		print("Running HCCS Day 2...");
 		day2setup();
+    pullDaily(); //%%mychange
 		spellTest();
 		getHotResistGear();
 		makePotionsDay2();
