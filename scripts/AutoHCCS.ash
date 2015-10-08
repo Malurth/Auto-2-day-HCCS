@@ -116,8 +116,8 @@ void checkPrereq() {
 	} else if (!have_skill($skill[Advanced Saucecrafting])) {
 		abort("You need Advanced Saucecrafting first.");
 	} else if (!get_property_boolean("chateauAvailable")) {
-        abort("You need access to Chateau Mantegna first.");
-    } else if ($item[Clan VIP Lounge key].available_amount() == 0) {
+    abort("You need access to Chateau Mantegna first.");
+  } else if ($item[Clan VIP Lounge key].available_amount() == 0) {
 		abort("You need access to your clan's VIP lounge first.");
 	} else if ($item[Deck of Every Card].available_amount() == 0) {
 		abort("You need the Deck of Every Card first.");
@@ -125,7 +125,9 @@ void checkPrereq() {
 		abort("You're supposed to be a sauceror.");
 	} else if (!knoll_available()) {
 		abort("You're supposed to have access to the (friendly) Degrassi Knoll. You know, muscle sign.");
-	}
+	} else if (my_path() != "Community Service") {
+    abort("You need to actually be in a Community Service run.");
+  }
 }
 
 void chateaumantegna_buyStuff(item toBuy) //thanks Cheesecookie
@@ -211,14 +213,15 @@ boolean pullDaily(boolean buy) {
   if (in_hardcore()) {
     return false;
   }
+  boolean [item] pullList;
   // Determine pull list
   // I don't want to hardcore these lists for flexibility but I guess this works for now (definitely not ideal list)
   switch(my_daycount()) {
     case 1:
-      items pullList = $items[Buddy Bjorn, Pressurized potion of perspicacity, R&uuml;mpelstiltz, R&uuml;mpelstiltz, R&uuml;mpelstiltz];
+      pullList = $items[Buddy Bjorn, Pressurized potion of perspicacity, R&uuml;mpelstiltz, R&uuml;mpelstiltz, R&uuml;mpelstiltz];
       break;
     case 2:
-      items pullList = $items[Super weight-gain 9000, SPF 451 lip balm, Worst candy, Red foxglove, Pressurized potion of puissance];
+      pullList = $items[Super weight-gain 9000, SPF 451 lip balm, Worst candy, Red foxglove, Pressurized potion of puissance];
       break;
     default:
       print("We don't know what to pull because you didn't finish within 2 days!", "red");
@@ -1785,7 +1788,7 @@ void doRun() { //main function
 			newSave();
 		}
 		day1setup();
-    pullDaily(); //%%mychange
+    pullDaily(true); //%%mychange
 		initialDrinks();
 		getMilk(); //of magnesium
 		coilTest();
@@ -1803,7 +1806,7 @@ void doRun() { //main function
 	} else if (my_daycount() == 2 && actuallyrun) {
 		print("Running HCCS Day 2...");
 		day2setup();
-    pullDaily(); //%%mychange
+    pullDaily(true); //%%mychange
 		spellTest();
 		getHotResistGear();
 		makePotionsDay2();
