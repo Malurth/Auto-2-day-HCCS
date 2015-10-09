@@ -22,6 +22,11 @@ int [string] statemap;
 boolean actuallyrun = true;
 boolean lockFamiliar = false;
 
+// Relay settings
+boolean runAsHardcore = get_property("acs_runAsHardcore").to_boolean(); // Needs a better way to turn on or off
+boolean buyPulls = get_property("acs_buyPulls").to_boolean();
+int pullBudget = get_property("acs_pullBudget").to_int();
+
 ////add puck-man logic maybe (unlocking the woods and stuff)
 ////allow running before ascending to check prereqs then
 ////actually check how many free crafts are remaining instead of the moronic BS I currently do
@@ -127,6 +132,8 @@ void checkPrereq() {
 		abort("You're supposed to have access to the (friendly) Degrassi Knoll. You know, muscle sign.");
 	} else if (my_path() != "Community Service") {
     abort("You need to actually be in a Community Service run.");
+  } else if (!in_hardcore()) {
+    //prompt user to opt into softcore handling
   }
 }
 
@@ -208,7 +215,7 @@ int free_rests_left() {
 }
 
 // %%mychange
-boolean pullDaily(boolean buy) {
+boolean pullDaily(boolean buy, int budget) {
   // Check if we're even in softcore
   if (in_hardcore()) {
     return false;
@@ -229,13 +236,15 @@ boolean pullDaily(boolean buy) {
   }
   foreach pull in pullList {
     // Checks if there are pulls left
-    if(pulls_remaining() > 0) {
+    if (pulls_remaining() > 0) {
       // Check if item is not storage
-      if(!(storage_amount(pull) > 0)) {
+      if (!(storage_amount(pull) > 0)) {
         // Checks if we are buying items we don't have
-        if(buy) {
+        if (buy) {
           // Buys pull
-          if(!buy_using_storage(1, pull)) {
+          if (mall_price(pull) > budget) {
+            print("Failed to buy " + pull + " because it exceeded the pull budget.", "red");
+          } else if (!buy_using_storage(1, pull)) {
             print("Failed to buy " + pull + "!", "red");
           }
         } else {
@@ -243,12 +252,16 @@ boolean pullDaily(boolean buy) {
         }
       }
       // Finally pulls item
-      if(!take_storage(1, pull)) {
+      if (!take_storage(1, pull)) {
         print("Failed to pull " + pull + "!", "red");
       }
     }
   }
   return true;
+}
+
+boolean pullDaily(boolean buy) {
+  return pullDaily(buy, 999999999);
 }
 
 boolean useIfHave(int howmany, item what) {
@@ -1793,7 +1806,9 @@ void doRun() { //main function
 			newSave();
 		}
 		day1setup();
-    pullDaily(true); //%%mychange
+    if(!runAsHardcore) {
+      pullDaily(buyPulls, pullBudget); //%%mychange
+    }
 		initialDrinks();
 		getMilk(); //of magnesium
 		coilTest();
@@ -1811,7 +1826,9 @@ void doRun() { //main function
 	} else if (my_daycount() == 2 && actuallyrun) {
 		print("Running HCCS Day 2...");
 		day2setup();
-    pullDaily(true); //%%mychange
+    if(!runAsHardcore) {
+      pullDaily(buyPulls, pullBudget); //%%mychange
+    }
 		spellTest();
 		getHotResistGear();
 		makePotionsDay2();
