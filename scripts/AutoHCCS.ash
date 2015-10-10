@@ -589,12 +589,21 @@ boolean giantGrowth() {
 
 boolean getSRifCan() { //returns true if got it
 	if (advToSemirare() == 0) {
+		if (my_adventures() <= 0) {
+			abort("Ran out of adventures.");
+		}
 		cli_execute("counters clear"); //otherwise it aborts
-		if (checkGarden() == "winter") {
-			adventure(1, $location[The Limerick Dungeon], "combat");
-		} else { 
-			adventure(1, $location[The Outskirts of Cobb's Knob], "combat");
-			use(1, $item[Knob Goblin lunchbox]);
+		if (statemap["questStage"] < 12) { // before item test
+			if (checkGarden() == "winter") {
+				adventure(1, $location[The Limerick Dungeon], "combat");
+			} else { 
+				adventure(1, $location[The Outskirts of Cobb's Knob], "combat");
+				use(1, $item[Knob Goblin lunchbox]);
+			}
+		} else if (statemap["questStage"] >= 12 && !islandSkipped()) {
+			adventure(1, $location[Hippy Camp], "combat");
+		} else {
+			return false;
 		}
 		return true;
 	} else {
@@ -1005,6 +1014,7 @@ void mystTest() {
 		chateauCast($skill[Manicotti Meditation]);
 		useIfHave(1, $item[ointment of the occult]);
 		useIfHave(1, $item[confiscated cell phone]);
+		useIfHave(1, $item[teeny-tiny magic scroll]);
 		useTaffies($item[pulled violet taffy]);
 		buy(1, $item[glittery mascara]);
 		use(1, $item[glittery mascara]);
@@ -1197,6 +1207,7 @@ void powerlevel() {
 					if (my_adventures() == 0) {
 						abort("Ran out of adventures.");
 					}
+					getSRifCan();
 					if (farmzone == $location[Video Game Level 1] && level2unlocked()) {
 						farmzone = $location[Video Game Level 2];
 					}
@@ -1376,10 +1387,12 @@ void getPotionIngredients() {
 	}
 	if (islandSkipped()) {
 		while ($item[cherry].available_amount() == 0 || $item[grapefruit].available_amount() == 0 || $item[lemon].available_amount() == 0) {
+			getSRifCan();
 			YRAdv($location[The Skeleton Store]);
 		}
 	} else {
 		while ($item[filthy knitted dread sack].available_amount() == 0 || $item[filthy corduroys].available_amount() == 0) {
+			getSRifCan();
 			YRAdv($location[Hippy Camp]);
 		}
 		item prevhat = equipped_item($slot[hat]);
@@ -1387,6 +1400,7 @@ void getPotionIngredients() {
 		equip($item[filthy knitted dread sack]);
 		equip($item[filthy corduroys]);
 		while ($item[cherry].available_amount() == 0) {
+			getSRifCan();
 			if ($item[disassembled clover].available_amount() > 0) {
 				use(1, $item[disassembled clover]);
 				visit_url("adventure.php?snarfblat=26&confirm=on");
@@ -1430,6 +1444,7 @@ void getHotResistGear() {
 			create(1, $item[Golden Light]);
 		} 
 		while($item[lava-proof pants].available_amount() == 0) {
+			getSRifCan();
 			YRAdv($location[LavaCo&trade; Lamp Factory]);
 		}
 	}
@@ -1740,7 +1755,6 @@ void doRun() { //main function
 		getCalderaDNA(); //elemental DNA tonic and fish hybrid
 		maybeUnlockIsland();
 		getG9Serum();
-		cli_execute("counters clear");
 		weaponTest();
 		itemTest();
 		getPotionIngredients();
