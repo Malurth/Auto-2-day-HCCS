@@ -1,6 +1,6 @@
 script "Automatic 2-day Hardcore Community Service";
 notify aabattery;
-since r16335;
+since r16363;
 //courtesy of yojimboS_LAW's 2-day HC guide
 //shoutouts to Cheesecookie, Ezandora, and Cannonfire40 for contributing a bit of code/advice
 
@@ -1202,6 +1202,9 @@ void powerlevel() {
 				if (get_property_boolean("stenchAirportAlways")) {
 					farmzone = $location[Uncle Gator's Country Fun-Time Liquid Waste Sluice];
 					calderaMood(); //same deal here
+					if ($item[barrel lid].available_amount() > 0) {
+						equip($item[barrel lid]);
+					}
 				} else if (get_property_boolean("spookyAirportAlways")) {
 					farmzone = $location[The Deep Dark Jungle];
 				} else if (get_property_boolean("sleazyAirportAlways")) {
@@ -1232,7 +1235,7 @@ void powerlevel() {
 						}
 					}
 					if (have_effect($effect[beaten up]) > 0) {
-						abort("Getting beaten up when trying to powerlevel. Consider changing custom combat script?");
+						abort("Getting beaten up when trying to powerlevel.");
 					}
 					restore_hp(my_maxhp());
 					turnsfarmed += 1;
@@ -1586,6 +1589,8 @@ void endDay1() { //final actions of day 1; spell test buffing goes here
 
 void setProperties() {
 	set_property("autoSatisfyWithNPCs", "true");
+	set_property("choiceAdventure1106", "2");
+	set_property("choiceAdventure1107", "1");
 	buffer page = visit_url("place.php?whichplace=airport");
 	if (contains_text(page, "airport_sleaze")) {
 		set_property("sleazyAirportAlways", "true");
@@ -1685,6 +1690,7 @@ void day1setup() {
 	cli_execute("breakfast"); 
 	getTurtleTotem();
 	hermit(99, $item[ten-leaf clover]);
+	use($item[ten-leaf clover].available_amount(), $item[ten-leaf clover]);
 	if ($item[detuned radio].available_amount() == 0) {
 		buy(1, $item[detuned radio]);
 		change_mcd(10);
@@ -1712,6 +1718,7 @@ void day2setup() {
 	harvestTea();
 	cli_execute("breakfast"); 
 	hermit(99, $item[ten-leaf clover]);
+	use($item[ten-leaf clover].available_amount(), $item[ten-leaf clover]);
 	if (get_property_int("_deckCardsDrawn") == 0) {
 		cli_execute("cheat forest");
 		cli_execute("cheat giant growth");
