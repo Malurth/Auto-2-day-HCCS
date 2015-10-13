@@ -1,6 +1,6 @@
 script "Automatic 2-day Hardcore Community Service";
 notify aabattery;
-since r16335;
+since r16363;
 //courtesy of yojimboS_LAW's 2-day HC guide
 //shoutouts to Cheesecookie, Ezandora, and Cannonfire40 for contributing a bit of code/advice
 
@@ -467,6 +467,14 @@ string combat(int round, string opp, string text) { //always uses this script's 
 		} else {
 			return customCombat(round - 1);
 		}
+	} else if (opp == $monster[factory worker (female)].to_string() || opp == $monster[factory overseer (female)].to_string()) { //dude DNA and hot resist gear
+		if(round == 0 && $item[DNA extraction syringe].available_amount() > 0 && $item[Gene Tonic: Dude].available_amount() == 0) {
+			return "item DNA extraction syringe";
+		} else if (YRsourceAvailable()) {
+			return combatYR();
+		} else {
+			return customCombat(round - 1);
+		}
 	} else if (opp == $monster[super-sized Cola Wars soldier].to_string() || opp == $monster[lab monkey].to_string() || opp == $monster[creepy little girl].to_string()) {
 		return "run away";
 	} else if (opp == $monster[government scientist].to_string()) {
@@ -477,7 +485,7 @@ string combat(int round, string opp, string text) { //always uses this script's 
 		} else {
 			return customCombat(round);
 		}
-	} else if (opp.contains_text("hippy") || opp.contains_text("Frat Boy") || opp == $monster[novelty tropical skeleton].to_string() || opp == $monster[factory worker (female)].to_string() || opp == $monster[factory overseer (female)].to_string()) {
+	} else if (opp.contains_text("hippy") || opp.contains_text("Frat Boy") || opp == $monster[novelty tropical skeleton].to_string()) {
 		return combatYR();
 	} else if (opp == $monster[fluffy bunny].to_string()) {
 		if (round == 0) {
@@ -677,12 +685,21 @@ boolean giantGrowth() {
 
 boolean getSRifCan() { //returns true if got it
 	if (advToSemirare() == 0) {
+		if (my_adventures() <= 0) {
+			abort("Ran out of adventures.");
+		}
 		cli_execute("counters clear"); //otherwise it aborts
-		if (checkGarden() == "winter") {
-			adventure(1, $location[The Limerick Dungeon], "combat");
-		} else { 
-			adventure(1, $location[The Outskirts of Cobb's Knob], "combat");
-			use(1, $item[Knob Goblin lunchbox]);
+		if (statemap["questStage"] < 12) { // before item test
+			if (checkGarden() == "winter") {
+				adventure(1, $location[The Limerick Dungeon], "combat");
+			} else { 
+				adventure(1, $location[The Outskirts of Cobb's Knob], "combat");
+				use(1, $item[Knob Goblin lunchbox]);
+			}
+		} else if (statemap["questStage"] >= 12 && !islandSkipped()) {
+			adventure(1, $location[Hippy Camp], "combat");
+		} else {
+			return false;
 		}
 		return true;
 	} else {
@@ -1073,6 +1090,7 @@ void muscleTest() {
 		useIfHave(1, $item[Ben-Gal&trade; Balm]);
 		useIfHave(1, $item[cuppa Feroci tea]);
 		useIfHave(1, $item[confiscated comic book]);
+		useIfHave(1, $item[Gene Tonic: Dude]);
 		useTaffies($item[pulled orange taffy]);
     useForTest("Muscle");
 		if (have_effect($effect[Phorcefullness]) == 0) {
@@ -1099,6 +1117,7 @@ void mystTest() {
 		chateauCast($skill[Manicotti Meditation]);
 		useIfHave(1, $item[ointment of the occult]);
 		useIfHave(1, $item[confiscated cell phone]);
+		useIfHave(1, $item[teeny-tiny magic scroll]);
 		useTaffies($item[pulled violet taffy]);
 		buy(1, $item[glittery mascara]);
 		use(1, $item[glittery mascara]);
@@ -1281,6 +1300,9 @@ void powerlevel() {
 				if (get_property_boolean("stenchAirportAlways")) {
 					farmzone = $location[Uncle Gator's Country Fun-Time Liquid Waste Sluice];
 					calderaMood(); //same deal here
+					if ($item[barrel lid].available_amount() > 0) {
+						equip($item[barrel lid]);
+					}
 				} else if (get_property_boolean("spookyAirportAlways")) {
 					farmzone = $location[The Deep Dark Jungle];
 				} else if (get_property_boolean("sleazyAirportAlways")) {
@@ -1295,6 +1317,7 @@ void powerlevel() {
 					if (my_adventures() == 0) {
 						abort("Ran out of adventures.");
 					}
+					getSRifCan();
 					if (farmzone == $location[Video Game Level 1] && level2unlocked()) {
 						farmzone = $location[Video Game Level 2];
 					}
@@ -1310,7 +1333,7 @@ void powerlevel() {
 						}
 					}
 					if (have_effect($effect[beaten up]) > 0) {
-						abort("Getting beaten up when trying to powerlevel. Consider changing custom combat script?");
+						abort("Getting beaten up when trying to powerlevel.");
 					}
 					restore_hp(my_maxhp());
 					turnsfarmed += 1;
@@ -1474,10 +1497,12 @@ void getPotionIngredients() {
 	}
 	if (islandSkipped()) {
 		while ($item[cherry].available_amount() == 0 || $item[grapefruit].available_amount() == 0 || $item[lemon].available_amount() == 0) {
+			getSRifCan();
 			YRAdv($location[The Skeleton Store]);
 		}
 	} else {
 		while ($item[filthy knitted dread sack].available_amount() == 0 || $item[filthy corduroys].available_amount() == 0) {
+			getSRifCan();
 			YRAdv($location[Hippy Camp]);
 		}
 		item prevhat = equipped_item($slot[hat]);
@@ -1485,6 +1510,7 @@ void getPotionIngredients() {
 		equip($item[filthy knitted dread sack]);
 		equip($item[filthy corduroys]);
 		while ($item[cherry].available_amount() == 0) {
+			getSRifCan();
 			if ($item[disassembled clover].available_amount() > 0) {
 				use(1, $item[disassembled clover]);
 				visit_url("adventure.php?snarfblat=26&confirm=on");
@@ -1528,7 +1554,14 @@ void getHotResistGear() {
 			create(1, $item[Golden Light]);
 		} 
 		while($item[lava-proof pants].available_amount() == 0) {
+			getSRifCan();
 			YRAdv($location[LavaCo&trade; Lamp Factory]);
+			if ($item[Gene Tonic: Dude].available_amount() == 0) {
+				buffer page = visit_url("campground.php?action=workshed");
+				if (contains_text(page, "Human-Human Hybrid")) {
+					visit_url("campground.php?action=dnapotion");
+				}
+			}
 		}
 	}
 	saveProgress(20);
@@ -1654,7 +1687,8 @@ void endDay1() { //final actions of day 1; spell test buffing goes here
 
 void setProperties() {
 	set_property("autoSatisfyWithNPCs", "true");
-	set_property("grabCloversHardcore", "true");
+	set_property("choiceAdventure1106", "2");
+	set_property("choiceAdventure1107", "1");
 	buffer page = visit_url("place.php?whichplace=airport");
 	if (contains_text(page, "airport_sleaze")) {
 		set_property("sleazyAirportAlways", "true");
@@ -1753,6 +1787,8 @@ void day1setup() {
 	}
 	cli_execute("breakfast"); 
 	getTurtleTotem();
+	hermit(99, $item[ten-leaf clover]);
+	use($item[ten-leaf clover].available_amount(), $item[ten-leaf clover]);
 	if ($item[detuned radio].available_amount() == 0) {
 		buy(1, $item[detuned radio]);
 		change_mcd(10);
@@ -1779,6 +1815,8 @@ void day2setup() {
 	summonDailyStuff();
 	harvestTea();
 	cli_execute("breakfast"); 
+	hermit(99, $item[ten-leaf clover]);
+	use($item[ten-leaf clover].available_amount(), $item[ten-leaf clover]);
 	if (get_property_int("_deckCardsDrawn") == 0) {
 		cli_execute("cheat forest");
 		cli_execute("cheat giant growth");
@@ -1844,7 +1882,6 @@ void doRun() { //main function
 		getCalderaDNA(); //elemental DNA tonic and fish hybrid
 		maybeUnlockIsland();
 		getG9Serum();
-		cli_execute("counters clear");
 		weaponTest();
 		itemTest();
 		getPotionIngredients();
