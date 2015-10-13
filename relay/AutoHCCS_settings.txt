@@ -1,3 +1,13 @@
-1	acs_runAsHardcore	boolean	Do softcore runs as hardcore runs
+1	acs_doSoftcore	boolean	Enable softcore handling
 2	acs_buyPulls	boolean	Buy missing pulls from the mall
-3	acs_pullBudget	int	Limit spending on buying pulls
+3	acs_pullBudget	int	Spending limit per pull
+4	acs_day1Pull1	item	List items to pull on each day
+5	acs_day1Pull2	item	Make sure to avoid using non-ASCII characters
+6	acs_day1Pull3	item	In the test column, specify which test the item is for (or if it's equipment)
+7	acs_day1Pull4	item	
+8	acs_day1Pull5	item	Here are some recommended items: 
+9	acs_day2Pull1	item	Buddy Bjorn, Pressurized potion of perspicacity, Pressurized potion of puissance,
+10	acs_day2Pull2	item	Red foxglove, SPF 451 lip balm, Super weight-gain 9000, Worst candy,
+11	acs_day2Pull3	item	Rumpelstiltz
+12	acs_day2Pull4	item
+13	acs_day2Pull5	item
