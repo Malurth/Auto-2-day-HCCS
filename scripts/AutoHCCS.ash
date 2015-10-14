@@ -22,6 +22,11 @@ int [string] statemap;
 boolean actuallyrun = true;
 boolean lockFamiliar = false;
 
+// Relay property settings
+boolean doSoftcore = get_property("acs_doSoftcore").to_boolean();
+boolean buyPulls = get_property("acs_buyPulls").to_boolean();
+int pullBudget = get_property("acs_pullBudget").to_int();
+
 ////add puck-man logic maybe (unlocking the woods and stuff)
 ////allow running before ascending to check prereqs then
 ////actually check how many free crafts are remaining instead of the moronic BS I currently do
@@ -116,8 +121,8 @@ void checkPrereq() {
 	} else if (!have_skill($skill[Advanced Saucecrafting])) {
 		abort("You need Advanced Saucecrafting first.");
 	} else if (!get_property_boolean("chateauAvailable")) {
-        abort("You need access to Chateau Mantegna first.");
-    } else if ($item[Clan VIP Lounge key].available_amount() == 0) {
+    abort("You need access to Chateau Mantegna first.");
+  } else if ($item[Clan VIP Lounge key].available_amount() == 0) {
 		abort("You need access to your clan's VIP lounge first.");
 	} else if ($item[Deck of Every Card].available_amount() == 0) {
 		abort("You need the Deck of Every Card first.");
@@ -125,7 +130,12 @@ void checkPrereq() {
 		abort("You're supposed to be a sauceror.");
 	} else if (!knoll_available()) {
 		abort("You're supposed to have access to the (friendly) Degrassi Knoll. You know, muscle sign.");
-	}
+	} else if (my_path() != "Community Service") {
+    abort("You need to actually be in a Community Service run.");
+  } else if (!in_hardcore() && !doSoftcore) {
+    print("I see that you are in softcore, if you would like to enable softcore handling, please set acs_doSoftcore to true in the relay settings.", "blue");
+    wait(5);
+  }
 }
 
 void chateaumantegna_buyStuff(item toBuy) //thanks Cheesecookie
@@ -205,6 +215,63 @@ int free_rests_left() {
 	return total_free_rests() - get_property_int("timesRested");
 }
 
+boolean pullDaily(boolean buy, int budget) {
+  // Check if we're even in softcore
+  if (in_hardcore()) {
+    return false;
+  }
+  int [item] pullList;
+  // Determine pull list
+  switch(my_daycount()) {
+    case 1:
+      for i from 1 to 5 {
+        pullList [get_property("acs_day1Pull" + i).to_item()] += 1;
+      }
+      break;
+    case 2:
+      for i from 1 to 5 {
+        pullList [get_property("acs_day2Pull" + i).to_item()] += 1;
+      }
+      break;
+    default:
+      print("We don't know what to pull because you didn't finish within 2 days!", "red");
+      return false;
+  }
+  
+  foreach pull in pullList {
+    // Checks if there are pulls left
+    if (pulls_remaining() > 0) {
+      // Check if item is not storage
+      if (!(storage_amount(pull) > 0)) {
+        // Checks if we are buying items we don't have
+        if (buy) {
+          // Buys pull
+          if (mall_price(pull) > budget) {
+            print("Failed to buy " + pull + " because it exceeded the pull budget.", "red");
+          } else if (!buy_using_storage(pullList[pull], pull)) {
+            print("Failed to buy " + pull + "!", "red");
+          } else {
+            print("Purchased " + pull, "blue");
+          }
+        } else {
+          print("We are not pulling " + pull + " because it is not in storage and we are not buying items.", "red");
+        }
+      }
+      // Finally pulls item
+      if (!take_storage(1, pull)) {
+        print("Failed to pull " + pull + "!", "red");
+      } else {
+        print("Pulled " + pull, "blue");
+      }
+    }
+  }
+  return true;
+}
+
+boolean pullDaily(boolean buy) {
+  return pullDaily(buy, 999999999);
+}
+
 boolean useIfHave(int howmany, item what) {
 	if(what.available_amount() >= howmany) {
 		use(howmany, what);
@@ -212,6 +279,27 @@ boolean useIfHave(int howmany, item what) {
 	} else {
 		return false;
 	}
+}
+
+// A bit janky but it works!
+boolean useForTest(string test) {
+  boolean useFound = false;
+  
+  for i from 1 to 5 {
+    for j from 1 to 2 {
+      if(get_property("acs_day" + j + "Pull" + i + "_test") == test) {
+        print("Using " + get_property("acs_day" + j + "Pull" + i) + " for test " + test, "blue");
+        useIfHave(1, get_property("acs_day" + j + "Pull" + i).to_item());
+        useFound = true;
+      }
+    }
+  }
+  
+  if(!useFound) {
+    print("I didn't find any items to use for test " + test, "orange");
+  }
+  
+  return useFound;
 }
 
 boolean free_rest() {
@@ -749,6 +837,7 @@ void hotTest() {
 		useIfHave(1, $item[scroll of Protection from Bad Stuff]);
 		useIfHave(1, $item[Gene Tonic: Elemental]);
 		useIfHave(1, $item[cuppa Frost tea]);
+    useForTest("HotRes");
 		if (have_familiar($familiar[Exotic Parrot])) {
 			use_familiar($familiar[Exotic Parrot]);
 			chateauCast($skill[Leash of Linguini]);
@@ -793,6 +882,7 @@ void weaponTest() {
 		useIfHave(1, $item[Gene Tonic: Beast]);
 		useIfHave(1, $item[confiscated comic book]);
 		//useIfHave(1, $item[cuppa Twen tea]);
+    useForTest("WeaponDmg");
 		while (my_level() < 8 && free_rest()) { //expends free rests until level 8 or running out
 			if (have_skill($skill[Summon Taffy]) && my_mp() > (mp_cost($skill[Summon Taffy]) + 50)) {
 				cast($skill[Summon Taffy]);
@@ -857,6 +947,7 @@ void itemTest() {
 		useIfHave(1, $item[tin cup]);
 		useIfHave(1, $item[cyclops eyedrops]);
 		useIfHave(1, $item[cuppa Serendipi tea]);
+    useForTest("Item");
 		useTaffies($item[pulled yellow taffy]);
 		if ($item[Dinsey Whinskey].available_amount() > 0 && my_inebriety() < 13) {
 			if (have_effect($effect[Ode to Booze]) < 2) {
@@ -920,6 +1011,7 @@ void hpTest() {
 		if (have_effect($effect[Experimental Effect G-9]) == 0) {
 			useIfHave(1, $item[experimental serum G-9]);
 		}
+    useForTest("HP");
 		buy(2, $item[Ben-Gal&trade; Balm]);
 		use(1, $item[Ben-Gal&trade; Balm]);
 		chateauCast($skill[Song of Starch]);
@@ -961,6 +1053,7 @@ void spellTest() { //buffing for this test is actually handled at the end of day
 		use(1, $item[cordial of concentration]);
 	}
 	//useIfHave(1, $item[cuppa Twen tea]);
+  useForTest("SpellDmg");
 	maximize("spell damage", false);
 	doTest(SPELLTEST);
 	saveProgress(19);
@@ -999,6 +1092,7 @@ void muscleTest() {
 		useIfHave(1, $item[confiscated comic book]);
 		useIfHave(1, $item[Gene Tonic: Dude]);
 		useTaffies($item[pulled orange taffy]);
+    useForTest("Muscle");
 		if (have_effect($effect[Phorcefullness]) == 0) {
 			useIfHave(1, $item[philter of phorce]);
 		}
@@ -1031,6 +1125,7 @@ void mystTest() {
 		giantGrowth();
 		useIfHave(1, $item[bag of grain]);
 		useIfHave(1, $item[cuppa Wit tea]);
+    useForTest("Myst");
 		saveProgress(31);
 	}
 	if(statemap["questStage"] == 31) {
@@ -1054,6 +1149,7 @@ void moxieTest() {
 		useIfHave(1, $item[cuppa Dexteri tea]);
 		useIfHave(1, $item[confiscated love note]);
 		useTaffies($item[pulled red taffy]);
+    useForTest("Moxie");
 		buy(1, $item[hair spray]);
 		use(1, $item[hair spray]);
 		if (have_effect($effect[Expert Oiliness]) == 0) {
@@ -1078,6 +1174,7 @@ void famTest() {
 		useIfHave(1, $item[Gene Tonic: Construct]);
 		useIfHave(1, $item[cuppa Loyal tea]);
 		useTaffies($item[pulled blue taffy]);
+    useForTest("Weight");
 		if($item[vintage smart drink].available_amount() > 0) {
 			chateauCast($skill[The Ode to Booze]);
 			chateauCast($skill[The Ode to Booze]);
@@ -1104,6 +1201,7 @@ void noncombatTest() {
 		useIfHave(1, $item[shady shades]);
 		useIfHave(1, $item[squeaky toy rose]);
 		useIfHave(1, $item[cuppa Obscuri tea]);
+    useForTest("NonCombat");
 		saveProgress(38);
 	}
 	if(statemap["questStage"] == 38) {
@@ -1765,12 +1863,18 @@ void initialDrinks() { //drinking after day 1 setup but before coiling wire
 }
 
 void doRun() { //main function
+  print("Let's get started!", "blue");
+  wait(5);
+  
 	if (my_daycount() == 1 && actuallyrun) {
 		print("Running HCCS Day 1...");
 		if(get_property("knownAscensions").to_int() != statemap["run"]) {
 			newSave();
 		}
 		day1setup();
+    if(doSoftcore) {
+      pullDaily(buyPulls, pullBudget);
+    }
 		initialDrinks();
 		getMilk(); //of magnesium
 		coilTest();
@@ -1787,6 +1891,9 @@ void doRun() { //main function
 	} else if (my_daycount() == 2 && actuallyrun) {
 		print("Running HCCS Day 2...");
 		day2setup();
+    if(doSoftcore) {
+      pullDaily(buyPulls, pullBudget);
+    }
 		spellTest();
 		getHotResistGear();
 		makePotionsDay2();
