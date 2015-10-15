@@ -36,7 +36,7 @@ void main() {
 		set_property(x, fields[x]);
 	}
 	
-	writeln("<html><head><title>AutoHCCS Settings</title></head><body><form action='' method='post'><h1>AutoHCCS Settings - /EXPERIMENTAL/</h1><table><tr><th>Name of Setting</th><th>Value</th><th>Test</th><th>Description</th></tr>");
+	writeln("<html><head><title>AutoHCCS Settings</title></head><body style=\"font-family: Arial;\"><form action='' method='post'><center><table cellspacing=0 cellpadding=0><tr><td style=\"color: white;\" align=\"center\" bgcolor=\"blue\" colspan=\"4\"><b>AutoHCCS Settings 0.2</b></td></tr><tr><td style=\"padding: 5px; border: 1px solid blue;\"><center><table><tr><td colspan='4'><center><table><tr><td valign=top></td><td valign=top><center><b>Configure Settings</b></center><p>Here are some cool settings!  Configure them!</td></tr></table></center></td></tr><tr><th>Name of Setting:</th><th>Value:</th><th>Test:</th><th>Description:</th></tr>");
 	foreach x in s {
 		switch (s[x].type) {
 			case "boolean" :
