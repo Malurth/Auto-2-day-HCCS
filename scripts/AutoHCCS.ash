@@ -24,7 +24,10 @@ boolean lockFamiliar = false;
 
 // Relay property settings
 boolean alwaysG9 = get_property("acs_alwaysG9").to_boolean();
-familiar 100familiar = get_property("acs_100familiar").to_familiar();
+familiar alwaysFam;
+if(have_familiar(get_property("acs_100familiar").to_familiar())) {
+	alwaysFam = get_property("acs_100familiar").to_familiar();
+}
 boolean doSoftcore = get_property("acs_doSoftcore").to_boolean();
 boolean buyPulls = get_property("acs_buyPulls").to_boolean();
 int pullBudget = get_property("acs_pullBudget").to_int();
@@ -87,20 +90,16 @@ void decorateShrub() {
 }
 
 familiar getSpleenFamiliar() {
-	if(100familiar != $familiar[none]) {
-		return 100familiar;
-	}
-
 	foreach spleener in $familiars[Golden Monkey, Grim Brother, Unconscious Collective] {
-		if (have_familiar(spleener))
+		if (have_familiar(spleener) && (alwaysFam == spleener || alwaysFam == $familiar[none]))
 			return spleener;
 	}
 	return $familiar[none];
 }
 
 void setFamiliar() { //idk about this but something's better than nothing...I'd throw puck-man here but then I'd have to unlock the woods so meh
-	if(100familiar != $familiar[none]) {
-		use_familiar(100familiar)
+	if(alwaysFam != $familiar[none]) {
+		use_familiar(alwaysFam);
 	} else if (!lockFamiliar) {
 		familiar spleener = getSpleenFamiliar();
 		int desiredSpleenDrops = 3;
@@ -393,7 +392,7 @@ void chewSpleen() {
 }
 
 boolean YRsourceAvailable() {
-	if(have_familiar($familiar[Crimbo Shrub]) || $item[Golden Light].available_amount() > 0) {
+	if((have_familiar($familiar[Crimbo Shrub]) && (alwaysFam == $familiar[none]) || alwaysFam == $familiar[Crimbo Shrub]) || $item[Golden Light].available_amount() > 0) {
 		return true;
 	} else {
 		return false;
@@ -419,6 +418,14 @@ string combatYR() {
 	} else {
 		abort("No yellow ray available when trying to use one");
 		return "I really shouldn't have to specify a return value after an abort";
+	}
+}
+
+string combatGG(int round, string opp, string text) {
+	if (round == 0) {
+		return "skill Giant Growth";
+	} else {
+		return "item Louder Than Bomb";
 	}
 }
 
@@ -528,8 +535,8 @@ void YRAdv(location where) { //sets crimbo shrub as active familiar first, then 
 		abort("Ran out of adventures.");
 	}
 	familiar prevfam = my_familiar();
-	if(100familiar != $familiar[none]) {
-		use_familiar(100familiar);
+	if(alwaysFam != $familiar[none]) {
+		use_familiar(alwaysFam);
 	} else if(have_familiar($familiar[Crimbo Shrub])) {
 		use_familiar($familiar[Crimbo Shrub]);
 		lockFamiliar = true;
@@ -670,18 +677,37 @@ int g9val() { //useless in hindsight; we get g9 on day 1 and use it on day 2 so 
 }
 
 boolean giantGrowth() {
+	location growthzone;
+	
 	if(!have_skill($skill[Giant Growth]) || $item[green mana].available_amount() == 0) {
 		return false;
 	} else {
 		restore_hp(my_maxhp());
 		familiar curfam = my_familiar();
-		if(100familiar == $familiar[none]) {
+		if(alwaysFam == $familiar[none]) {
 			use_familiar($familiar[none]);
+			lockFamiliar = true;
+			adv1($location[The Dire Warren], -1, "combat");
+			lockFamiliar = false;
+			use_familiar(curfam);
+		} else {
+			if (get_property_boolean("stenchAirportAlways")) {
+				growthzone = $location[Uncle Gator's Country Fun-Time Liquid Waste Sluice];
+				calderaMood(); //same deal here
+				if ($item[barrel lid].available_amount() > 0) {
+					equip($item[barrel lid]);
+				}
+			} else if (get_property_boolean("spookyAirportAlways")) {
+				growthzone = $location[The Deep Dark Jungle];
+			} else if (get_property_boolean("sleazyAirportAlways")) {
+				growthzone = $location[Sloppy Seconds Diner];
+			} else if (get_property_boolean("hotAirportAlways")) {
+				growthzone = $location[The SMOOCH Army HQ];
+			} else {
+				growthzone = $location[Video Game Level 1];
+			}
+			adv1(growthzone, -1, "combatGG");
 		}
-		lockFamiliar = true;
-		adv1($location[The Dire Warren], -1, "combat");
-		lockFamiliar = false;
-		use_familiar(curfam);
 		if(have_effect($effect[Giant Growth]) > 0) {
 			return true;
 		} else {
@@ -845,7 +871,7 @@ void hotTest() {
 		useIfHave(1, $item[Gene Tonic: Elemental]);
 		useIfHave(1, $item[cuppa Frost tea]);
 		useForTest("HotRes");
-		if (100familiar == $familiar[Exotic Parrot] || (have_familiar($familiar[Exotic Parrot]) && 100familiar == $familiar[none])) {
+		if (alwaysFam == $familiar[Exotic Parrot] || (have_familiar($familiar[Exotic Parrot]) && alwaysFam == $familiar[none])) {
 			use_familiar($familiar[Exotic Parrot]);
 			chateauCast($skill[Leash of Linguini]);
 			chateauCast($skill[Empathy of the Newt]);
@@ -1285,8 +1311,8 @@ void powerlevel() {
 					}
 					free_rest();
 				}
-				if (100familiar != $familiar[none]) {
-					use_familiar(100familiar);
+				if (alwaysFam != $familiar[none]) {
+					use_familiar(alwaysFam);
 				} else if (have_familiar($familiar[Galloping Grill])) {
 				  use_familiar($familiar[Galloping Grill]);
 				} else if (have_familiar($familiar[Hovering Sombrero])) {
@@ -1382,8 +1408,8 @@ void getMilk() {
 	chateauCast($skill[Sauce Contemplation]);
 	restore_hp(my_maxhp());
 	familiar prevfam = my_familiar();
-	if(100familiar != $familiar[none]) {
-		use_familiar(100familiar);
+	if(alwaysFam != $familiar[none]) {
+		use_familiar(alwaysFam);
 	} else if(have_familiar($familiar[Crimbo Shrub])) {
 		use_familiar($familiar[Crimbo Shrub]);
 	}
@@ -1561,7 +1587,7 @@ void getHotResistGear() {
 		pulverize($item[Staff of the Headmaster's Victuals]);
 	}
 	if (get_property_boolean("hotAirportAlways")) {
-		if (!have_familiar($familiar[Crimbo Shrub]) && $item[handful of Smithereens].available_amount() > 0 && $item[Golden Light].available_amount() < 1) {
+		if ((!have_familiar($familiar[Crimbo Shrub]) || alwaysFam != $familiar[Crimbo Shrub]) && $item[handful of Smithereens].available_amount() > 0 && $item[Golden Light].available_amount() < 1) {
 			create(1, $item[Golden Light]);
 		} 
 		while($item[lava-proof pants].available_amount() == 0) {
@@ -1726,6 +1752,9 @@ void harvestTea() {
 }
 
 void day1setup() {
+	if(alwaysFam != $familiar[none]) {
+		use_familiar(alwaysFam);
+	}
 	free_barrels();
 	if(statemap["questStage"] >= 1) {
 		return;
@@ -1783,7 +1812,7 @@ void day1setup() {
 	if ($item[Flaskfull of Hollow].available_amount() == 3) {
 		use(3, $item[Flaskfull of Hollow]);
 	}
-	if (!have_familiar($familiar[Crimbo Shrub]) && $item[Golden Light].available_amount() == 0) {
+	if ((!have_familiar($familiar[Crimbo Shrub]) || alwaysFam != $familiar[Crimbo Shrub]) && $item[Golden Light].available_amount() == 0) {
 		create(2, $item[Golden Light]);
 	}
 	if ($item[This Charming Flan].available_amount() == 0) {
@@ -1875,6 +1904,7 @@ void initialDrinks() { //drinking after day 1 setup but before coiling wire
 }
 
 void doRun() { //main function
+	wait(3);
 	if (my_daycount() == 1 && actuallyrun) {
 		print("Running HCCS Day 1...");
 		if(get_property("knownAscensions").to_int() != statemap["run"]) {

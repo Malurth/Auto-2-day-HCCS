@@ -1,6 +1,10 @@
 Automatic 2-day HCCS
 =====
 
+Neat fork!
+----------------
+This is my fork of Marluth's Auto 2-day HCCS script. Many of my changes are experimental, but I will label them as such to avoid confusion! Please note that our scripts should not be used in conjunction since there are many things that clash between them.
+
 What this?
 ----------------
 This is a KoLmafia script to automatically complete the Community Service challenge path in Hardcore within two days. Or attempt to, anyway. It largely follows yojimbos_law's 2-day HCCS guide, located here: http://forums.kingdomofloathing.com/vb/showpost.php?p=4769933&postcount=345
@@ -12,7 +16,7 @@ How use?
 Install it by running this command in KoLmafia's graphical CLI:
 
 <pre>
-svn checkout https://github.com/Malurth/Auto-2-day-HCCS/branches/Release/
+svn checkout https://github.com/RESPRiT/Auto-2-day-HCCS/branches/Release/
 </pre>
 
 Then, given you have met the prerequisites, run it (AutoHCCS.ash) from the scripts menu right after you've ascended into HCCS, and again as the first thing you do on the next day. Also, cross your fingers.
