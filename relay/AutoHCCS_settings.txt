@@ -1,13 +1,15 @@
-1	acs_doSoftcore	boolean	Enable softcore handling
-2	acs_buyPulls	boolean	Buy missing pulls from the mall
-3	acs_pullBudget	int	Spending limit per pull
-4	acs_day1Pull1	item	List items to pull on each day
-5	acs_day1Pull2	item	Make sure to avoid using non-ASCII characters
-6	acs_day1Pull3	item	In the test column, specify which test the item is for (or if it's equipment)
-7	acs_day1Pull4	item	
-8	acs_day1Pull5	item	Here are some recommended items: 
-9	acs_day2Pull1	item	Buddy Bjorn, Pressurized potion of perspicacity, Pressurized potion of puissance,
-10	acs_day2Pull2	item	Red foxglove, SPF 451 lip balm, Super weight-gain 9000, Worst candy,
-11	acs_day2Pull3	item	Rumpelstiltz
-12	acs_day2Pull4	item
-13	acs_day2Pull5	item
+1	acs_doSoftcore	boolean	Enable softcore handling	sc
+2	acs_buyPulls	boolean	Buy missing pulls from the mall	sc
+3	acs_pullBudget	int	Spending limit per pull	sc
+4	acs_day1Pull1	test	List items to pull on each day	sc
+5	acs_day1Pull2	test	Make sure to avoid using non-ASCII characters	sc
+6	acs_day1Pull3	test	In the test column, specify which test the item is for (or if it's equipment)	sc
+7	acs_day1Pull4	test		sc
+8	acs_day1Pull5	test	Here are some recommended items: 	sc
+9	acs_day2Pull1	test	Buddy Bjorn, Pressurized potion of perspicacity, Pressurized potion of puissance,	sc
+10	acs_day2Pull2	test	Red foxglove, SPF 451 lip balm, Super weight-gain 9000, Worst candy,	sc
+11	acs_day2Pull3	test	Rumpelstiltz	sc
+12	acs_day2Pull4	test		sc
+13	acs_day2Pull5	test		sc
+14	acs_100familiar	familiar	If you want to use a familiar for 100% of the run, put its type here<br/><em>NOTE: Do <strong>NOT</strong> use a familiar that deals combat damage</em>	exp
+15	acs_alwaysG9	boolean	Always try to grab G9-serums, even if you can't olfact	exp

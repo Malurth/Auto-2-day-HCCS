@@ -1,14 +1,14 @@
 // Full credit to bumcheekcity for starting point
 // Adapted from relay_bumcheekascend.ash
-
 script "relay_AutoHCCS.ash";
+notify tamedtheturtle;
 
 record setting {
 	string name;
 	string type;
 	string description;
-	string value;
-	string c;
+	string category;
+	string color;
 	string d;
 	string e;
 };
@@ -18,6 +18,9 @@ string[string] fields;
 boolean success;
 
 boolean[string] tests = $strings[Equip , HP, Muscle, Myst, Moxie, Weight, WeaponDmg, SpellDmg, NonCombat, Item, HotRes];
+string softcore;
+string general;
+string experimental;
 
 boolean load_current_map(string fname, setting[int] map) {
 	file_to_map(fname+".txt", map);
@@ -25,6 +28,43 @@ boolean load_current_map(string fname, setting[int] map) {
 	if (count(map) == 0) return false;
 	
 	return true;
+}
+
+string generate_html(setting s) {
+	string html;
+	
+	html += "<tr bgcolor=" + s.color + ">";
+	
+	switch (s.type) {
+		case "boolean" :
+			html += "<td>"+s.name+"</td><td colspan=2><select name='"+s.name+"'>";
+			if (get_property(s.name) == "true") {
+				html += "<option value='true' selected='selected'>true</option><option value='false'>false</option>";
+			} else {
+				html += "<option value='true'>true</option><option value='false' selected='selected'>false</option>";
+			}
+			html += "</td><td>"+s.description+"</td></tr>";
+		break;
+		
+		case "test" :
+			html += "<td>"+s.name+"</td><td><input type='text' name='"+s.name+"' value='"+get_property(s.name)+"' /></td><td>";
+			html += "<select name='"+s.name+"_test"+"'>";
+			foreach i in tests {
+			if(i == get_property(s.name + "_test")) {
+				html += "<option value='" + get_property(s.name + "_test") + "' selected='selected'>" + get_property(s.name + "_test") + "</option>";
+			} else {
+				html += "<option value='" + i + "'>" + i + "</option>";
+			}
+			}
+			html += "</td><td>"+s.description+"</td></tr>";
+		break;
+
+		default :      
+			html += "<td>"+s.name+"</td><td colspan=2><input type='text' name='"+s.name+"' value='"+get_property(s.name)+"' /></td><td>"+s.description+"</td></tr>";
+		break;
+	}
+	
+	return html;
 }
 
 void main() {
@@ -38,37 +78,40 @@ void main() {
 	
 	writeln("<html><head><title>AutoHCCS Settings</title></head><body style=\"font-family: Arial;\"><form action='' method='post'><center><table cellspacing=0 cellpadding=0><tr><td style=\"color: white;\" align=\"center\" bgcolor=\"blue\" colspan=\"4\"><b>AutoHCCS Settings 0.2</b></td></tr><tr><td style=\"padding: 5px; border: 1px solid blue;\"><center><table><tr><td colspan='4'><center><table><tr><td valign=top></td><td valign=top><center><b>Configure Settings</b></center><p>Here are some cool settings!  Configure them!</td></tr></table></center></td></tr><tr><th>Name of Setting:</th><th>Value:</th><th>Test:</th><th>Description:</th></tr>");
 	foreach x in s {
-		switch (s[x].type) {
-			case "boolean" :
-				write("<tr><td>"+s[x].name+"</td><td><select name='"+s[x].name+"'>");
-				if (get_property(s[x].name) == "true") {
-					write("<option value='true' selected='selected'>true</option><option value='false'>false</option>");
-				} else {
-					write("<option value='true'>true</option><option value='false' selected='selected'>false</option>");
-				}
-				writeln("</td><td></td><td>"+s[x].description+"</td></tr>");
-			break;
-			
-      case "item" :
-        writeln("<tr><td>"+s[x].name+"</td><td><input type='text' name='"+s[x].name+"' value='"+get_property(s[x].name)+"' /></td><td>");
-        write("<select name='"+s[x].name+"_test"+"'>");
-        foreach i in tests {
-          if(i == get_property(s[x].name + "_test")) {
-            write("<option value='" + get_property(s[x].name + "_test") + "' selected='selected'>" + get_property(s[x].name + "_test") + "</option>");
-          } else {
-            write("<option value='" + i + "'>" + i + "</option>");
-          }
-        }
-        writeln("</td><td>"+s[x].description+"</td></tr>");
-      break;
-      
-      
-      
+		switch (s[x].category) {
+			case "sc" :
+				softcore += generate_html(s[x]);
+				break;
+				
+			case "gen" :
+				general += generate_html(s[x]);
+				break;
+				
+			case "exp" :
+				experimental += generate_html(s[x]);
+				break;
+				
 			default :
-				writeln("<tr><td>"+s[x].name+"</td><td><input type='text' name='"+s[x].name+"' value='"+get_property(s[x].name)+"' /></td><td></td><td>"+s[x].description+"</td></tr>");
-			break;
+				general += generate_html(s[x]);
+				break;
 		}
 	}
+	
+	if(length(general).to_boolean()) {
+		writeln("<tr><td colspan=4 height=1 bgcolor=black> </td></tr><tr><td colspan='4' align=center>&mdash; <b>General Settings</b> &mdash;</td></tr><tr><td colspan=4 height=1 bgcolor=black> </td></tr>");
+		writeln(general);
+	}
+	
+	if(length(softcore).to_boolean()) {
+		writeln("<tr><td colspan=4 height=1 bgcolor=black> </td></tr><tr><td colspan='4' align=center>&mdash; <b>Softcore Settings</b> &mdash;</td></tr><tr><td colspan=4 height=1 bgcolor=black> </td></tr>");
+		writeln(softcore);
+	}
+	
+	if(length(experimental).to_boolean()) {
+		writeln("<tr><td colspan=4 height=1 bgcolor=black> </td></tr><tr><td colspan='4' align=center>&mdash; <b>Experimental Settings</b> (Use at your own risk!) &mdash;</td></tr><tr><td colspan=4 height=1 bgcolor=black> </td></tr>");
+		writeln(experimental);
+	}
+	
 	writeln("<tr><td colspan='3'><input type='submit' name='' value='Save Changes' /></td></tr></form>");
 	writeln("</body></html>");
 }

@@ -23,6 +23,8 @@ boolean actuallyrun = true;
 boolean lockFamiliar = false;
 
 // Relay property settings
+boolean alwaysG9 = get_property("acs_alwaysG9").to_boolean();
+familiar 100familiar = get_property("acs_100familiar").to_familiar();
 boolean doSoftcore = get_property("acs_doSoftcore").to_boolean();
 boolean buyPulls = get_property("acs_buyPulls").to_boolean();
 int pullBudget = get_property("acs_pullBudget").to_int();
@@ -85,6 +87,10 @@ void decorateShrub() {
 }
 
 familiar getSpleenFamiliar() {
+	if(100familiar != $familiar[none]) {
+		return 100familiar;
+	}
+
 	foreach spleener in $familiars[Golden Monkey, Grim Brother, Unconscious Collective] {
 		if (have_familiar(spleener))
 			return spleener;
@@ -93,7 +99,9 @@ familiar getSpleenFamiliar() {
 }
 
 void setFamiliar() { //idk about this but something's better than nothing...I'd throw puck-man here but then I'd have to unlock the woods so meh
-	if (!lockFamiliar) {
+	if(100familiar != $familiar[none]) {
+		use_familiar(100familiar)
+	} else if (!lockFamiliar) {
 		familiar spleener = getSpleenFamiliar();
 		int desiredSpleenDrops = 3;
 		if (my_daycount() == 2)
@@ -520,7 +528,9 @@ void YRAdv(location where) { //sets crimbo shrub as active familiar first, then 
 		abort("Ran out of adventures.");
 	}
 	familiar prevfam = my_familiar();
-	if(have_familiar($familiar[Crimbo Shrub])) {
+	if(100familiar != $familiar[none]) {
+		use_familiar(100familiar);
+	} else if(have_familiar($familiar[Crimbo Shrub])) {
 		use_familiar($familiar[Crimbo Shrub]);
 		lockFamiliar = true;
 	}
@@ -665,7 +675,9 @@ boolean giantGrowth() {
 	} else {
 		restore_hp(my_maxhp());
 		familiar curfam = my_familiar();
-		use_familiar($familiar[none]);
+		if(100familiar == $familiar[none]) {
+			use_familiar($familiar[none]);
+		}
 		lockFamiliar = true;
 		adv1($location[The Dire Warren], -1, "combat");
 		lockFamiliar = false;
@@ -715,7 +727,7 @@ void getG9Serum() { //like 0-7 turns prolly
 	if(statemap["questStage"] >= 8) {
 		return;
 	}
-	if (get_property_boolean("spookyAirportAlways") && have_skill($skill[Transcendent Olfaction])) {
+	if (get_property_boolean("spookyAirportAlways") && (have_skill($skill[Transcendent Olfaction]) || alwaysG9)) {
 		if (my_mp() < mp_cost($skill[Transcendent Olfaction])) {
 			if (!free_rest()) {
 				restore_mp(mp_cost($skill[Transcendent Olfaction]));
@@ -833,7 +845,7 @@ void hotTest() {
 		useIfHave(1, $item[Gene Tonic: Elemental]);
 		useIfHave(1, $item[cuppa Frost tea]);
 		useForTest("HotRes");
-		if (have_familiar($familiar[Exotic Parrot])) {
+		if (100familiar == $familiar[Exotic Parrot] || (have_familiar($familiar[Exotic Parrot]) && 100familiar == $familiar[none])) {
 			use_familiar($familiar[Exotic Parrot]);
 			chateauCast($skill[Leash of Linguini]);
 			chateauCast($skill[Empathy of the Newt]);
@@ -1273,7 +1285,9 @@ void powerlevel() {
 					}
 					free_rest();
 				}
-				if (have_familiar($familiar[Galloping Grill])) {
+				if (100familiar != $familiar[none]) {
+					use_familiar(100familiar);
+				} else if (have_familiar($familiar[Galloping Grill])) {
 				  use_familiar($familiar[Galloping Grill]);
 				} else if (have_familiar($familiar[Hovering Sombrero])) {
 					use_familiar($familiar[Hovering Sombrero]);
@@ -1368,7 +1382,9 @@ void getMilk() {
 	chateauCast($skill[Sauce Contemplation]);
 	restore_hp(my_maxhp());
 	familiar prevfam = my_familiar();
-	if(have_familiar($familiar[Crimbo Shrub])) {
+	if(100familiar != $familiar[none]) {
+		use_familiar(100familiar);
+	} else if(have_familiar($familiar[Crimbo Shrub])) {
 		use_familiar($familiar[Crimbo Shrub]);
 	}
 	if (get_property("chateauMonster") == "dairy goat") {
