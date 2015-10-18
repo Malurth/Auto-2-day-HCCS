@@ -11,5 +11,8 @@
 11	acs_day2Pull3	test	Rumpelstiltz	sc
 12	acs_day2Pull4	test		sc
 13	acs_day2Pull5	test		sc
-14	acs_100familiar	familiar	If you want to use a familiar for 100% of the run, put its type here<br/><em>NOTE: Do <strong>NOT</strong> use a familiar that deals combat damage</em>	exp
+14	acs_100familiar	familiar	If you want to use a familiar for 100% of the run, put its type here	exp
 15	acs_alwaysG9	boolean	Always try to grab G9-serums, even if you can't olfact	exp
+16	acs_doCheckpoints	boolean	Abort at strategic points (ie g9-collecting, powerleveling and tests) - just rerun the script to continue	gen
+17	acs_smashHippyStone	boolean	Enable PVP or not	gen
+18	acs_actuallyRun	boolean	<strong>For development:</strong> Set to false for compile testing	exp	red
