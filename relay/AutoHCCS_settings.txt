@@ -16,3 +16,4 @@
 16	acs_doCheckpoints	boolean	Abort at strategic points (ie g9-collecting, powerleveling and tests) - just rerun the script to continue	gen
 17	acs_smashHippyStone	boolean	Enable PVP or not	gen
 18	acs_actuallyRun	boolean	<strong>For development:</strong> Set to false for compile testing	exp	red
+19	acs_buyChateau	boolean	Buy Chateau items (such as the skylight)	gen
