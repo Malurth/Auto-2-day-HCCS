@@ -25,6 +25,7 @@ if(get_property("acs_actuallyRun") == "") {
 } else {
 	actuallyrun = get_property("acs_actuallyRun").to_boolean();
 }
+boolean buyChateau = get_property("acs_buyChateau").to_boolean();
 
 // ---------------------------------------------------------------------------
 
@@ -138,7 +139,7 @@ void setItemFamiliar() {
 	}
 }
 
-void setFamiliar() { //idk about this but something's better than nothing...I'd throw puck-man here but then I'd have to unlock the woods so meh
+void setFamiliar() {
 	if(alwaysFam != $familiar[none]) {
 		use_familiar(alwaysFam);
 	} else if (!lockFamiliar) {
@@ -146,7 +147,14 @@ void setFamiliar() { //idk about this but something's better than nothing...I'd 
 		int desiredSpleenDrops = 3;
 		if (my_daycount() == 2)
 			desiredSpleenDrops = 1;
-		if (my_daycount() == 1 && have_familiar($familiar[Fist Turkey]) && $familiar[Fist Turkey].drops_today < 1) {
+
+		if (my_daycount() == 1 && gr8psAvailable() && $item[yellow pixel].available_amount() < 15 && $item[power pill].available_amount() < 1 && have_familiar($familiar[Ms. Puck Man])) {
+			use_familiar($familiar[Ms. Puck Man]);
+		} else if (my_daycount() == 1 && gr8psAvailable() && $item[yellow pixel].available_amount() < 15 && $item[power pill].available_amount() < 1 && have_familiar($familiar[Puck Man])) {
+			use_familiar($familiar[Puck Man]);
+		} else if (gr8psAvailable() && have_familiar($familiar[Galloping Grill])) {
+			use_familiar($familiar[Galloping Grill]);
+		} else if (my_daycount() == 1 && have_familiar($familiar[Fist Turkey]) && $familiar[Fist Turkey].drops_today < 1) {
 			use_familiar($familiar[Fist Turkey]);
 		} else if (spleener != $familiar[none] && spleener.drops_today < desiredSpleenDrops) {
 			use_familiar(spleener);
@@ -156,10 +164,10 @@ void setFamiliar() { //idk about this but something's better than nothing...I'd 
 			use_familiar($familiar[Crimbo Shrub]);
 		} else if (have_familiar($familiar[Smiling Rat])) {
 			use_familiar($familiar[Smiling Rat]);
-		}
+		} 
 		if ($item[astral pet sweater].available_amount() > 0) {
 			equip($item[astral pet sweater]);
-		}		
+		}
 	}
 }
 
@@ -354,7 +362,7 @@ void allStatBuffs() {
 		chew(1, $item[handful of Smithereens]);
 	}
 	if (have_effect($effect[Human-Humanoid Hybrid]) == 0 && $item[Gene Tonic: Humanoid].available_amount() > 0) {
-		use(1, $item[Gene Tonic: Humanoid]);
+		useIfHave(1, $item[Gene Tonic: Humanoid]);
 	}
 }
 
@@ -602,7 +610,7 @@ void calderaMood() {
 }
 
 boolean YRsourceAvailable() {
-	if((have_familiar($familiar[Crimbo Shrub]) && (alwaysFam == $familiar[none]) || alwaysFam == $familiar[Crimbo Shrub]) || $item[Golden Light].available_amount() > 0) {
+	if(((have_familiar($familiar[Crimbo Shrub]) && (alwaysFam == $familiar[none])) || alwaysFam == $familiar[Crimbo Shrub] || $item[Golden Light].available_amount() > 0) {
 		return true;
 	} else {
 		return false;
@@ -663,7 +671,7 @@ string combat(int round, string opp, string text) { //always uses this script's 
 		} else {
 			return customCombat(round);
 		}
-	} else if (opp == $monster[C<i>bzzt</i>er the Grisly Bear].to_string() || opp == $monster[Gurgle the Turgle].to_string() || opp == $monster[Skeezy the Jug Rat].to_string() && $item[DNA extraction syringe].available_amount() > 0) { //DNA
+	} else if ((opp == $monster[C<i>bzzt</i>er the Grisly Bear].to_string() || opp == $monster[Gurgle the Turgle].to_string() || opp == $monster[Skeezy the Jug Rat].to_string()) && $item[DNA extraction syringe].available_amount() > 0) { //DNA
 		if ($item[Gene Tonic: Construct].available_amount() == 0) {
 			if(round == 0) {
 				return "item DNA extraction syringe";
@@ -836,17 +844,18 @@ boolean teaTreeAvailable() {
 	return contains_text(page, "Tea Tree");
 }
 
-
 boolean doghouseAvailable() {
 	buffer page = visit_url("campground.php?action=doghouse");
 	visit_url("choice.php?pwd&whichchoice=1110&option=6");
-	if (contains_text(page, "Spoopy")) {
+	if (contains_text(page, "Spoopy") && contains_text(page, "Board up the doghouse")) {
 		return true;
 	} else {
+		if (contains_text(page, "Spoopy") && contains_text(page, "Pry the boards off the doghouse")) {
+			print("Your dog house is boarded up, consider prying the boards off?");
+		}
 		return false;
 	}
 }
-
 
 string checkGarden() {
 	buffer page = visit_url("campground.php");
@@ -932,7 +941,7 @@ void unlockSkeletonStore() {
 
 void chateaumantegna_buyStuff(item toBuy) //thanks Cheesecookie
 {
-	if(!get_property_boolean("chateauAvailable"))
+	if(!get_property_boolean("chateauAvailable") || !buyChateau)
 	{
 		return;
 	}
@@ -1782,7 +1791,7 @@ void day2setup() {
 	if(statemap["questStage"] >= 180) {
 		return;
 	}
-	//chateaumantegna_buyStuff($item[Ceiling Fan]);
+	chateaumantegna_buyStuff($item[Ceiling Fan]);
 	summonDailyStuff();
 	cli_execute("breakfast"); 
 	hermit(99, $item[ten-leaf clover]);
@@ -1874,7 +1883,7 @@ void getHotResistGear() {
 				YRAdv($location[LavaCo&trade; Lamp Factory]);
 			}
 		} else {
-			while($item[lava-proof pants].available_amount() == 0) {
+			while($item[lava-proof pants].available_amount() == 0 && have_effect($effect[Everything Looks Yellow]) == 0) {
 				YRAdv($location[LavaCo&trade; Lamp Factory]);
 			}
 		}
@@ -2234,8 +2243,8 @@ void hpTest() {
 		return;
 	}
 	if(statemap["questStage"] == 260) {
-		use(1, $item[oil of expertise]);
-		use(1, $item[jar of &quot;Creole Lady&quot; marrrmalade]);
+		useIfHave(1, $item[oil of expertise]);
+		useIfHave(1, $item[jar of &quot;Creole Lady&quot; marrrmalade]);
 		useIfHave(1, $item[scroll of Puddingskin]);
 		useIfHave(1, $item[philter of phorce]);
 		useIfHave(1, $item[cuppa Feroci tea]);
@@ -2585,7 +2594,7 @@ void doRun() { //main function
 		weaponTest(); // Progress #90-110, 75 adv, 56 adv used
 		eatMoreFoodD1(); // Progress #120, 131 adv
 		itemTest(); // Progess #130-140, 131 adv, 44-48 adv used
-		getPotionIngredients(); // Progress #105, 179 adv, 1-4 advs used, shrub 
+		getPotionIngredients(); // Progress #150, 179 adv, 1-4 advs used, shrub 
 		if (gr8psAvailable() && ($item[yellow pixel].available_amount() < 10) && ($item[power pill].available_amount() < 1)) {
 			abort("Missing "+(10-$item[yellow pixel].available_amount())+" yellow pixel or "+(1-$item[power pill].available_amount())+" power pill");
 		}
