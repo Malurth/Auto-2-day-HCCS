@@ -807,7 +807,9 @@ void YRAdv(location where) { //sets crimbo shrub as active familiar first, then 
 	}
 	familiar prevfam = my_familiar();
 	boolean light = true;
-	if($item[Golden Light].available_amount() == 0 && have_familiar($familiar[Crimbo Shrub])) {
+	if(alwaysFam != $familiar[none]) {
+		use_familiar(alwaysFam);
+	} else if($item[Golden Light].available_amount() == 0 && have_familiar($familiar[Crimbo Shrub])) {
 		use_familiar($familiar[Crimbo Shrub]);
 		lockFamiliar = true;
 		light = false;
@@ -1196,7 +1198,7 @@ void day1setup() {
 		use(3, $item[Flaskfull of Hollow]);
 	}
 	summonDailyStuff();
-	if (!have_familiar($familiar[Crimbo Shrub]) && $item[Golden Light].available_amount() == 0) {
+	if ((!have_familiar($familiar[Crimbo Shrub]) && $item[Golden Light].available_amount() == 0) || (alwaysFam != $familiar[none] && alwaysFam != $familiar[Crimbo Shrub])) {
 		create(2, $item[Golden Light]);
 	}
 	if ($item[This Charming Flan].available_amount() == 0) {
@@ -1267,7 +1269,9 @@ void doChateauPainting() {
 		abort("Chateau is neither sk8 gnome nor dairy goat.");
 	}
 
-	if (gr8psAvailable() || !have_familiar($familiar[Crimbo Shrub])) {
+	if (alwaysFam != $familiar[none]) {
+		use_familiar(alwaysFam);
+	} else if (gr8psAvailable() || !have_familiar($familiar[Crimbo Shrub])) {
 		setItemFamiliar();
 	} else {
 		use_familiar($familiar[Crimbo Shrub]);
