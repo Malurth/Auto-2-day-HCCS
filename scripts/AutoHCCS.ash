@@ -610,7 +610,7 @@ void calderaMood() {
 }
 
 boolean YRsourceAvailable() {
-	if(((have_familiar($familiar[Crimbo Shrub]) && (alwaysFam == $familiar[none])) || alwaysFam == $familiar[Crimbo Shrub] || $item[Golden Light].available_amount() > 0) {
+	if((have_familiar($familiar[Crimbo Shrub]) && (alwaysFam == $familiar[none])) || alwaysFam == $familiar[Crimbo Shrub] || $item[Golden Light].available_amount() > 0) {
 		return true;
 	} else {
 		return false;
@@ -876,14 +876,22 @@ string checkGarden() {
 
 boolean getSRifCan() { //returns true if got it
 	if (advToSemirare() == 0) {
-		cli_execute("counters clear"); //otherwise it aborts
-		if (checkGarden() == "winter") {
-			adventure(1, $location[The Limerick Dungeon], "combat");
-		} else { 
-			adventure(1, $location[The Outskirts of Cobb's Knob], "combat");
-			use(1, $item[Knob Goblin lunchbox]);
+		if (my_adventures() <= 0) {
+			generateEmergencyAdventures();
 		}
 		cli_execute("counters clear"); //otherwise it aborts
+		if (statemap["questStage"] < 120) { // before item test
+			if (checkGarden() == "winter") {
+				adventure(1, $location[The Limerick Dungeon], "combat");
+			} else { 
+				adventure(1, $location[The Outskirts of Cobb's Knob], "combat");
+				use(1, $item[Knob Goblin lunchbox]);
+			}
+		} else if (statemap["questStage"] >= 120 && !islandSkipped()) {
+			adventure(1, $location[Hippy Camp], "combat");
+		} else {
+			return false;
+		}
 		return true;
 	} else {
 		return false;
@@ -1880,10 +1888,12 @@ void getHotResistGear() {
 	if (get_property_boolean("hotAirportAlways")) {
 		if ($item[lava-proof pants].available_amount() > 0) {
 			while($item[heat-resistant necktie].available_amount() == 0) {
+				getSRifCan();
 				YRAdv($location[LavaCo&trade; Lamp Factory]);
 			}
 		} else {
 			while($item[lava-proof pants].available_amount() == 0 && have_effect($effect[Everything Looks Yellow]) == 0) {
+				getSRifCan();
 				YRAdv($location[LavaCo&trade; Lamp Factory]);
 			}
 		}
@@ -2369,6 +2379,7 @@ void mystTest() {
 			create(1, $item[salamander slurry]);
 			use(1, $item[salamander slurry]);
 		}
+		useIfHave(1, $item[teeny-tiny magic scroll]);
 		useIfHave(1, $item[confiscated cell phone]);
 		if (get_property_int("_speakeasyDrinksDrunk") < 2 && have_effect($effect[On the Trolley]) == 0 && my_inebriety() <= 12) {
 			if (have_effect($effect[Ode to Booze]) < 2) {
