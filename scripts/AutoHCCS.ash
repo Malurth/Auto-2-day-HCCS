@@ -610,7 +610,7 @@ void calderaMood() {
 }
 
 boolean YRsourceAvailable() {
-	if(((have_familiar($familiar[Crimbo Shrub]) && (alwaysFam == $familiar[none])) || alwaysFam == $familiar[Crimbo Shrub] || $item[Golden Light].available_amount() > 0) {
+	if((have_familiar($familiar[Crimbo Shrub]) && (alwaysFam == $familiar[none])) || alwaysFam == $familiar[Crimbo Shrub] || $item[Golden Light].available_amount() > 0) {
 		return true;
 	} else {
 		return false;
