@@ -26,7 +26,7 @@ This script is quite targeted; if you don't have the right stuff/class it will i
 - Have Chateau Mantegna access, Clan V.I.P. lounge access (with speakeasy/hotdogs), and the Deck of Every Card.
 
 It also expects that you, before ascending:
-- Have your chateau prepared with a ceiling fan, foreign language tapes, a continental juice bar, and a painting of a dairy goat
+- Have your chateau prepared with a ceiling fan, foreign language tapes, a continental juice bar, and a painting of a dairy goat or sk8r gnome
 - Chose astral pilsners for your consumables
 
 If that's all you have it almost certainly will fail to hit 2-day, but that's the basic stuff needed to run it. To greatly increase your chances of completing 2-day, I highly recommend also having the Winter Garden, DNA lab, and every airplane charter other than Spring Break Beach. Some IotMs such as the Fist Turkey, Crimbo Shrub, Galloping Grill, GameInform correspondence, and a standard-compliant spleen familiar will help as well, but much less significantly. Others, like Puck-man and the Mayo clinic, while potentially helpful, are currently entirely unsupported in the script.
@@ -40,6 +40,3 @@ Speaking of getting beaten up, I suppose I should clarify combat stuff; you'll f
 Alternatives
 ----------------
 If you'd like to automate a softcore run instead, you now can thanks to the efforts of RESPRiT. If you'd like to use that, toggle that functionality on from the new relay browser settings menu RESPRiT added, and list what items you'd like to pull for what tests. The menu includes a recommended pull list, so you don't have to stress about that.
-
-If you'd still like to automate a hardcore CS run, but do it a lot more optimally/faster, Croft has published a comprehensive overhaul of the script! It now supports a sk8 gnome in the chateau painting, Puck Man, optional checkpoints where the script will abort in select areas to let you do whatever manual optimizations you may want to perform before re-running it, and myriad general optimizations. It's overall much better in nearly every regard, but it regresses some of the recent changes like the softcore functionality, and has also had much less people trying to run it as of this writing, so it's less guaranteed to be stable as this is. (I would have merged it into this script, but I don't want to potentially break things for current users, and I'd also have to merge it by hand since it's only on pastebin and I'm lazy :p). You can find his new-and-improved script at http://pastebin.com/7xXCPM3e.
-
