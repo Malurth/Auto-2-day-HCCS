@@ -29,6 +29,7 @@ boolean buyChateau = get_property("acs_buyChateau").to_boolean();
 if(get_property("acs_powerLevelTurnsLeft") == "") {
 	set_property("acs_powerLevelTurnsLeft", 18);
 }
+boolean useCCS = get_property("acs_useCCS").to_boolean();
 
 // ---------------------------------------------------------------------------
 
@@ -567,7 +568,7 @@ void nightcap() {
 			drinkBestSize1();
 		}
 	} 
-	drink(1, $item[emergency margarita]);
+	overdrink(1, $item[emergency margarita]);
 }
 
 //---------------------------------------------------------------------------
@@ -576,6 +577,76 @@ void nightcap() {
 void powerlevelMood() {
 	cli_execute("mood PowerLevelMood");
 	cli_execute("mood clear");
+	
+	if (have_skill($skill[Elemental Saucesphere])) {
+		cli_execute("trigger lose_effect, Elemental Saucesphere, cast 1 Elemental Saucesphere");
+	}
+	
+	//Totem buffs
+	if (have_skill($skill[Astral Shell])) {
+		cli_execute("trigger lose_effect, Astral Shell, cast 1 Astral Shell");
+	}
+	if (have_skill($skill[Ghostly Shell])) {
+		cli_execute("trigger lose_effect, Ghostly Shell, cast 1 Ghostly Shell");
+	}
+	if (have_skill($skill[Reptilian Fortitude])) {
+		cli_execute("trigger lose_effect, Reptilian Fortitude, cast 1 Reptilian Fortitude");
+	}
+
+
+	//shitty buffs
+	if (have_skill($skill[Sauce Contemplation])) {
+		cli_execute("trigger lose_effect, Saucemastery, cast 1 Sauce Contemplation");
+	}
+	if (have_skill($skill[Manicotti Meditation])) {
+		cli_execute("trigger lose_effect, Pasta Oneness, cast 1 Manicotti Meditation");
+	}
+	if (have_skill($skill[Patience of the Tortoise])) {
+		cli_execute("trigger lose_effect, Patience of the Tortoise, cast 1 Patience of the Tortoise");
+	} 
+	
+	//AT buffs
+	if (have_skill($skill[Ur-Kel's Aria of Annoyance])) {
+		cli_execute("trigger lose_effect, Ur-Kel's Aria of Annoyance, cast 1 Ur-Kel's Aria of Annoyance");
+	}
+	if (have_skill($skill[Aloysius' Antiphon of Aptitude])) {
+		cli_execute("trigger lose_effect, Aloysius' Antiphon of Aptitude, cast 1 Aloysius' Antiphon of Aptitude");
+	}
+	if (have_skill($skill[Stevedave's Shanty of Superiority])) {
+		cli_execute("trigger lose_effect, Stevedave's Shanty of Superiority, cast 1 Stevedave's Shanty of Superiority");
+	}
+	if (have_skill($skill[The Magical Mojomuscular Melody])) {
+		cli_execute("trigger lose_effect, The Magical Mojomuscular Melody, cast 1 The Magical Mojomuscular Melody");
+	}
+
+	//ML
+	if (have_skill($skill[Pride of the Puffin])) {
+		cli_execute("trigger lose_effect, Pride of the Puffin, cast 1 Pride of the Puffin");
+	}
+	if (have_skill($skill[Drescher's Annoying Noise])) {
+		cli_execute("trigger lose_effect, Drescher's Annoying Noise, cast 1 Drescher's Annoying Noise");
+	}
+	
+	
+	//spell damage
+	if (have_skill($skill[Song of Sauce])) {
+		cli_execute("trigger lose_effect, Song of Sauce, cast 1 Song of Sauce");
+	}
+	
+	//weight
+	if (have_skill($skill[Leash of Linguini])) {
+		cli_execute("trigger lose_effect, Leash of Linguini, cast 1 Leash of Linguini");
+	}
+	if (have_skill($skill[Empathy of the Newt])) {
+		cli_execute("trigger lose_effect, Empathy, cast 1 Empathy of the Newt");
+	}
+
+	//+myst stats
+	if (have_skill($skill[Wry Smile])) {
+		cli_execute("trigger lose_effect, Wry Smile, cast 1 Wry Smile");
+	}
+	
+	cli_execute("mood execute");
 	cli_execute("mood execute");
 }
 
@@ -627,9 +698,9 @@ string customCombat(int round) {
 	if (round < 0) {
 		round = 0;
 	}
-	if (round == 0 && (have_skill($skill[Curse of Weaksauce]) && my_mp() >= (mp_cost($skill[Curse of Weaksauce]) + mp_cost($skill[Saucegeyser])))) {
+	if (round == 0 && (have_skill($skill[Curse of Weaksauce]) && my_mp() >= (mp_cost($skill[Curse of Weaksauce]) + mp_cost($skill[Saucegeyser]))) && !useCCS) {
 		return "skill Curse of Weaksauce";
-	} else if (have_skill($skill[Saucegeyser]) && my_mp() >= mp_cost($skill[Saucegeyser])) {
+	} else if (have_skill($skill[Saucegeyser]) && my_mp() >= mp_cost($skill[Saucegeyser]) && !useCCS) {
 		return "skill Saucegeyser";
 	} else {
 		print("Resorting to CCS", "red");
@@ -914,12 +985,15 @@ boolean giantGrowth() {
 		familiar curfam = my_familiar();
 		if(alwaysFam == $familiar[none]) {
 			use_familiar($familiar[none]);
+			cli_execute("checkpoint");
+			cli_execute("unequip");
 			lockFamiliar = true;
 			adv1($location[The Dire Warren], -1, "combat");
 			lockFamiliar = false;
+			cli_execute("outfit checkpoint");
 			use_familiar(curfam);
 		} else {
-			if (get_property_boolean("stenchAirportAlways")) {
+			if (get_property_boolean("stenchAirportAlways") elemental_resistance($element[stench]) > 30) {
 				growthzone = $location[Uncle Gator's Country Fun-Time Liquid Waste Sluice];
 				calderaMood(); //same deal here
 				if ($item[barrel lid].available_amount() > 0) {
@@ -2194,7 +2268,7 @@ void powerlevel() {
 	if(get_property_int("acs_questStage") == 250) {
 		lockFamiliar = true;
 		location farmzone;
-		if (get_property_boolean("stenchAirportAlways")) {
+		if (get_property_boolean("stenchAirportAlways") && elemental_resistance($element[stench]) > 30) {
 			farmzone = $location[Uncle Gator's Country Fun-Time Liquid Waste Sluice];
 		} else if (get_property_boolean("spookyAirportAlways")) {
 			farmzone = $location[The Deep Dark Jungle];
