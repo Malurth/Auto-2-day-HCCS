@@ -993,7 +993,7 @@ boolean giantGrowth() {
 			cli_execute("outfit checkpoint");
 			use_familiar(curfam);
 		} else {
-			if (get_property_boolean("stenchAirportAlways") elemental_resistance($element[stench]) > 30) {
+			if (get_property_boolean("stenchAirportAlways") && elemental_resistance($element[stench]) > 30) {
 				growthzone = $location[Uncle Gator's Country Fun-Time Liquid Waste Sluice];
 				calderaMood(); //same deal here
 				if ($item[barrel lid].available_amount() > 0) {
