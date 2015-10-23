@@ -775,7 +775,7 @@ string combat(int round, string opp, string text) { //always uses this script's 
 	} else if (opp == $monster[sk8 gnome].to_string()) { //humanoid DNA and gr8tness
 		if(round == 0 && $item[DNA extraction syringe].available_amount() > 0 && $item[Gene Tonic: Humanoid].available_amount() == 0) {
 			return "item DNA extraction syringe";
-		} else if (YRsourceAvailable() && !gr8psAvailable()) {
+		} else if (YRsourceAvailable()) {
 			return combatYR();
 		} else {
 			return customCombat(round - 1);
@@ -1385,11 +1385,13 @@ void doChateauPainting() {
 	}
 	if (gr8psAvailable()) {
 		if($item[gr8ps].available_amount() == 0) {
-			abort("Failed to retrieve gr8ps.");
+			print("Failed to retrieve gr8ps.", "red");
+			wait(5);
 		}
 	} else {
 		if($item[glass of goat's milk].available_amount() == 0) {
-			abort("Failed to retrieve glass of goat's milk.");
+			print("Failed to retrieve glass of goat's milk.", "red");
+			wait(5);
 		}
 		create(1, $item[milk of magnesium]);
 	}
