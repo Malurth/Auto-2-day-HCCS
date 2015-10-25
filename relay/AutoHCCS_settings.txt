@@ -15,5 +15,8 @@
 15	acs_alwaysG9	boolean	Always try to grab G9-serums, even if you can't olfact	exp
 16	acs_doCheckpoints	boolean	Abort at strategic points (ie g9-collecting, powerleveling and tests) - just rerun the script to continue	gen
 17	acs_smashHippyStone	boolean	Enable PVP or not	gen
-18	acs_actuallyRun	boolean	<strong>For development:</strong> Set to false for compile testing	exp	red
+18	acs_actuallyRun	boolean	Set to false for compile testing	dev	
 19	acs_buyChateau	boolean	Buy Chateau items (such as the skylight)	gen
+20	acs_powerLevelTurnsLeft	int	Number of turns left to powerlevel	dev	
+21	acs_questStage	int	Current stage in the script	dev	
+22	acs_useCCS	boolean	Use custom combat for fights instead of script logic	gen
