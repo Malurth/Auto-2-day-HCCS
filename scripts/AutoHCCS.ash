@@ -714,7 +714,8 @@ string combatYR() {
 	} else if ($item[Golden Light].available_amount() > 0) {
 		return "item Golden Light";
 	} else {
-		abort("No yellow ray available when trying to use one");
+		print("No yellow ray available when trying to use one", "red");
+		wait(5);
 		return "I really shouldn't have to specify a return value after an abort";
 	}
 }
@@ -775,7 +776,7 @@ string combat(int round, string opp, string text) { //always uses this script's 
 	} else if (opp == $monster[sk8 gnome].to_string()) { //humanoid DNA and gr8tness
 		if(round == 0 && $item[DNA extraction syringe].available_amount() > 0 && $item[Gene Tonic: Humanoid].available_amount() == 0) {
 			return "item DNA extraction syringe";
-		} else if (YRsourceAvailable()) {
+		} else if (have_skill($skill[Open a Big Yellow Present]) || $item[Golden Light].available_amount() > 0) {
 			return combatYR();
 		} else {
 			return customCombat(round - 1);
@@ -995,10 +996,6 @@ boolean giantGrowth() {
 		} else {
 			if (get_property_boolean("stenchAirportAlways") && elemental_resistance($element[stench]) > 30) {
 				growthzone = $location[Uncle Gator's Country Fun-Time Liquid Waste Sluice];
-				calderaMood(); //same deal here
-				if ($item[barrel lid].available_amount() > 0) {
-					equip($item[barrel lid]);
-				}
 			} else if (get_property_boolean("spookyAirportAlways")) {
 				growthzone = $location[The Deep Dark Jungle];
 			} else if (get_property_boolean("sleazyAirportAlways")) {
@@ -1029,11 +1026,12 @@ void unlockSkeletonStore() {
 
 void chateaumantegna_buyStuff(item toBuy) //thanks Cheesecookie
 {
-	if(!get_property_boolean("chateauAvailable") || !buyChateau)
+	if(!get_property_boolean("chateauAvailable"))
 	{
 		return;
 	}
-
+	
+	// The potpourri seems to almost always be necessary so I'm going to let the stat items slide for buyChateau right now
 	if((toBuy == $item[Electric Muscle Stimulator]) && (my_meat() >= 500))
 	{
 		visit_url("shop.php?pwd=&whichshop=chateau&action=buyitem&whichrow=411&quantity=1", true);
@@ -1047,6 +1045,10 @@ void chateaumantegna_buyStuff(item toBuy) //thanks Cheesecookie
 		visit_url("shop.php?pwd=&whichshop=chateau&action=buyitem&whichrow=413&quantity=1", true);
 	}
 
+	if(!buyChateau) {
+		return;
+	}
+	
 	if((toBuy == $item[Antler Chandelier]) && (my_meat() >= 1500))
 	{
 		visit_url("shop.php?pwd=&whichshop=chateau&action=buyitem&whichrow=415&quantity=1", true);
@@ -1368,7 +1370,7 @@ void doChateauPainting() {
 
 	if (alwaysFam != $familiar[none]) {
 		use_familiar(alwaysFam);
-	} else if (gr8psAvailable() || !have_familiar($familiar[Crimbo Shrub])) {
+	} else if (!have_familiar($familiar[Crimbo Shrub])) {
 		setItemFamiliar();
 	} else {
 		use_familiar($familiar[Crimbo Shrub]);
