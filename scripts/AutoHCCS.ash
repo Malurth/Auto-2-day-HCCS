@@ -2126,7 +2126,7 @@ void powerlevel() {
 		chateauCast($skill[Pride of the Puffin]);
 		chateauCast($skill[Drescher's Annoying Noise]); // +10 ML @ 20 adv
 		chateauCast($skill[Drescher's Annoying Noise]);
-		if ($item[perfume of prejudice].available_amount() == 0 && get_property_int("_rapidPrototypingUsed") < 5) {
+		if ($item[perfume of prejudice].available_amount() == 0 && get_property_int("_rapidPrototypingUsed") < 5 && get_property_boolean("autoSatisfyWithCoinmasters")) {
 			create(1, $item[perfume of prejudice]);
 		}
 		useifhave(2, $item[perfume of prejudice]); // +5 ML @ 15 adv
