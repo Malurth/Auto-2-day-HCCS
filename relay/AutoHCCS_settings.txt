@@ -11,8 +11,8 @@
 11	acs_day2Pull3	test	Rumpelstiltz	sc
 12	acs_day2Pull4	test		sc
 13	acs_day2Pull5	test		sc
-14	acs_100familiar	familiar	If you want to use a familiar for 100% of the run, put its type here	exp
-15	acs_alwaysG9	boolean	Always try to grab G9-serums, even if you can't olfact	exp
+14	acs_100familiar	familiar	If you want to use a familiar for 100% of the run, put its type here	gen
+15	acs_alwaysG9	boolean	Always try to grab G9-serums, even if you can't olfact	gen
 16	acs_doCheckpoints	boolean	Abort at strategic points (ie g9-collecting, powerleveling and tests) - just rerun the script to continue	gen
 17	acs_smashHippyStone	boolean	Enable PVP or not	gen
 18	acs_actuallyRun	boolean	Set to false for compile testing	dev	
@@ -20,3 +20,8 @@
 20	acs_powerLevelTurnsLeft	int	Number of turns left to powerlevel	dev	
 21	acs_questStage	int	Current stage in the script	dev	
 22	acs_useCCS	boolean	Use custom combat for fights instead of script logic	gen
+23	acs_g9Day2	boolean	Get the G9-serum on day 2 instead of day 1	exp
+24	acs_anyClass	boolean	Run the script as a non-Sauceror. This is rationally coupled with setting useCCS to true	exp
+25	acs_anySign	boolean	Run the script as a non-Gnoll sign	exp
+26	acs_turnsToPowerLevel	int	Total number of turns to powerlevel	exp
+27	acs_gr8pDropThreshold	int	Minimum percentage chance of getting the gr8ps to drop with +item, otherwise YR	dev
