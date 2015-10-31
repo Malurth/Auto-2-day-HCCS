@@ -371,7 +371,7 @@ void chateauCast(skill which) { //casts the skill as normal (if you have it), un
 }
 
 void chateauCast(skill which, int duration) {
-	while(have_effect(to_effect(which)) < duration) {
+	while(have_skill(which) && have_effect(to_effect(which)) < duration) {
 		chateauCast(which);
 	}
 }
@@ -1938,7 +1938,7 @@ void endDay1() { //final actions of day 1; spell test buffing goes here
 		chateauCast($skill[The Ode to Booze], 10);
 		chateauCast($skill[The Ode to Booze], 5);
 		chateauCast($skill[Arched Eyebrow of the Archmage]);
-		chateauCast($skill[Spirit of Garlic]);
+		chateauCast($skill[Spirit of Peppermint]);
 		chateauCast($skill[Song of Sauce]);
 		if(get_property_boolean("barrelShrineUnlocked") && my_class() == $class[sauceror]) {
 			visit_url("da.php?barrelshrine=1");
