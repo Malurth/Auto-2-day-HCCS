@@ -2022,7 +2022,7 @@ void day2setup() {
 		cli_execute("teatree cuppa obscuri tea");
 	}
 	checkGameInform();
-	cli_execute("eudora xi"); // switch back to Xi
+	boolean xi = cli_execute("eudora xi"); // switch back to Xi
 	saveProgress(180);
 }
 
