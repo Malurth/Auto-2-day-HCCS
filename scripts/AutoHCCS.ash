@@ -418,6 +418,9 @@ void allStatBuffs() {
 	if (have_effect($effect[Song of Bravado]) == 0) {
 		chateauCast($skill[Song of Bravado]);
 	}
+	if (have_effect($effect[Big]) == 0) {
+		chateauCast($skill[Get Big]);
+	}
 	if (have_effect($effect[Tomato Power]) == 0) {
 		useIfHave(1, $item[tomato juice of powerful power]);
 	}
@@ -2414,6 +2417,7 @@ void hpTest() {
 		chateauCast($skill[Patience of the Tortoise]);
 		chateauCast($skill[Moxie of the Mariachi]);
 		chateauCast($skill[Rage of the Reindeer]);
+		chateauCast($skill[Quiet Determination]);
 		if (have_familiar($familiar[Grim Brother])) {
 			cli_execute("grim hpmp");
 		}
@@ -2445,7 +2449,7 @@ void hpTest() {
 		return;
 	}
 	if(doTest(HPTEST)) {
-		chew(1, $item[blood-drive sticker]);
+		//chew(1, $item[blood-drive sticker]); //no longer usable in ronin or hardcore or under level 13 lol
 	}
 	saveProgress(280);
 }
@@ -2461,6 +2465,9 @@ void muscleTest() {
 		if (have_effect($effect[Rage of the Reindeer]) == 0) {
 			chateauCast($skill[Rage of the Reindeer]);
 		} 
+		if (have_effect($effect[Quiet Determination]) == 0) {
+			chateauCast($skill[Quiet Determination]);
+		}
 		chateauCast($skill[Seal Clubbing Frenzy]);
 		chateauCast($skill[Patience of the Tortoise]);
 		useIfHave(1, $item[jar of &quot;Creole Lady&quot; marrrmalade]);
@@ -2506,6 +2513,7 @@ void mystTest() {
 	if(get_property_int("acs_questStage") == 300) {
 		chateauCast($skill[The Magical Mojomuscular Melody]);
 		chateauCast($skill[Sauce Contemplation]);
+		chateauCast($skill[Quiet Judgement]);
 		chateauCast($skill[Manicotti Meditation]);
 		useIfHave(1, $item[ointment of the occult]);
 		useForTest("Myst");
@@ -2560,7 +2568,10 @@ void moxieTest() {
 		chateauCast($skill[Moxie of the Mariachi]);
 		chateauCast($skill[Disco Aerobics]);
 		chateauCast($skill[Blubber Up]);
-		chateauCast($skill[Disco Smirk]);
+		if (!have_skill($skill[Quiet Desperation])) {
+			chateauCast($skill[Disco Smirk]);
+		}
+		chateauCast($skill[Quiet Desperation]);
 		useIfHave(1, $item[dollop of barbecue sauce]);
 		useIfHave(1, $item[pressurized potion of pulchritude]);
 		useIfHave(1, $item[serum of sarcasm]);
@@ -2677,6 +2688,9 @@ void noncombatTest() {
 		useIfHave(1, $item[shady shades]);
 		useIfHave(1, $item[squeaky toy rose]);
 		useIfHave(1, $item[cuppa Obscuri tea]);
+		if (have_effect($effect[Silent Running]) < 1 && !get_property_boolean("_olympicSwimmingPool")) {
+			cli_execute("swim sprints");
+		}
 		useForTest("NonCombat");
 		saveProgress(380);
 	}
